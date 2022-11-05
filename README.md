@@ -6,3 +6,10 @@
 |1|Nguyễn Tuấn Khanh|
 |2|Đỗ Thái Duy|
 |3|Trương Công Thành|
+## Môi trường cài đặt
+- Ngôn ngữ chính: C#.
+- Framework: .NET 5 (core).
+- IDE: Visual Studio 2022.
+##Features
+// To do: List all features
+## How to run
