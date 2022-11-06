@@ -8,4 +8,9 @@
 		<OutputPath>..\BIN</OutputPath>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="HandyControl" Version="3.3.0" />
+	  <PackageReference Include="PropertyChanged.Fody" Version="4.0.3" />
+	</ItemGroup>
+
 </Project>
