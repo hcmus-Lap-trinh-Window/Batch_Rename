@@ -1,0 +1,8 @@
+{
+  "RuleNameList": [
+    "AddSuffix",
+    "AddPrefix",
+    "AddCounter",
+    "ChangeFileName"
+  ]
+}
