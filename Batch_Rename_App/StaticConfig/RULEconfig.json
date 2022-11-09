@@ -1,8 +1,9 @@
 {
-  "RuleNameList": [
-    "AddSuffix",
-    "AddPrefix",
-    "AddCounter",
-    "ChangeFileName"
-  ]
+  "RuleConfig": {
+    "RuleFolder": "RuleDll",
+    "RuleList": [
+      "Rule01",
+      "Rule02"
+    ]
+  }
 }

@@ -10,15 +10,28 @@
 
 	<PropertyGroup>
 		<OutputPath>..\BIN</OutputPath>
+		<SelfContained>false</SelfContained>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\CommonModel\CommonModel.csproj" />
 		<PackageReference Include="HandyControl" Version="3.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="PropertyChanged.Fody" Version="4.0.3" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="StaticConfig\RULEconfig.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties staticconfig_4ruleconfig_1json__JsonSchema="https://bitbucket.org/atlassianlabs/atlascode/raw/main/resources/schemas/pipelines-schema.json" /></VisualStudio></ProjectExtensions>
 
 
 </Project>
