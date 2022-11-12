@@ -37,6 +37,7 @@ namespace Batch_Rename_App
             this._RuleFactory = RuleFactory.GetInstance(ruleConfig);
             InitializeComponent();
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
