@@ -10,14 +10,12 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace AddPrefixRule
 {
-    /// <summary>
-    /// Interaction logic for AddPrefixRuleWindow.xaml
-    /// </summary>
-    public partial class AddPrefixRuleWindow : Window
+    public partial class AddPrefixRuleWindow : UserControl
     {
         public AddPrefixRuleWindow()
         {
