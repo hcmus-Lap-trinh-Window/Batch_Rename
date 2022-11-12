@@ -6,7 +6,16 @@
         xmlns:local="clr-namespace:Batch_Rename_App"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="FistLoad">
-    <Grid>
-        <TextBlock Name="textBlock" FontSize="40">TEXT</TextBlock>
-    </Grid>
+    <StackPanel>
+        <ComboBox Name="menu" SelectionChanged="SelectRule"/>
+        <WrapPanel>
+            <Button Click="LoadFileClick">Choose file</Button>
+            <TextBlock Name="originFileName"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Label>Preview: </Label>
+            <TextBlock Name="previewFileName"/>
+        </WrapPanel>
+        <Button>Start Batching</Button>
+    </StackPanel>
 </Window>

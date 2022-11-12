@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Batch_Rename_App", "Batch_Rename_App\Batch_Rename_App.csproj", "{8925E4ED-D424-44FE-899A-AD248F7CA2B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonModel", "CommonModel\CommonModel.csproj", "{659B8BC5-E57E-4FC0-A28A-F352B6183BAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonModel", "CommonModel\CommonModel.csproj", "{659B8BC5-E57E-4FC0-A28A-F352B6183BAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddPrefixRule", "AddPrefixRule\AddPrefixRule.csproj", "{AD81B157-722D-4EE5-A127-71994B95194A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{659B8BC5-E57E-4FC0-A28A-F352B6183BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{659B8BC5-E57E-4FC0-A28A-F352B6183BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{659B8BC5-E57E-4FC0-A28A-F352B6183BAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD81B157-722D-4EE5-A127-71994B95194A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD81B157-722D-4EE5-A127-71994B95194A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD81B157-722D-4EE5-A127-71994B95194A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD81B157-722D-4EE5-A127-71994B95194A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

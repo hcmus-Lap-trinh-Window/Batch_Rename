@@ -3,7 +3,6 @@
     "RuleFolder": "RuleDll",
     "RuleList": [
       "AddPrefixRule",
-      "TrimRule"
     ]
   }
 }
