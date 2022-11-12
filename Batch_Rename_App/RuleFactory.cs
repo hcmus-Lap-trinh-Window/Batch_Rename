@@ -29,7 +29,7 @@ namespace CommonModel
             }
         }
 
-        public static RuleFactory GetInstance(IOptionsSnapshot<RuleConfig> ruleConfig)
+        public static RuleFactory GetInstance(IOptionsSnapshot<RuleConfig>? ruleConfig)
         {
             if (_Instance == null)
             {
@@ -37,7 +37,7 @@ namespace CommonModel
                 {
                     if (_Instance == null)
                     {
-                        _Instance = new RuleFactory(ruleConfig.Value);
+                        _Instance = new RuleFactory(ruleConfig: ruleConfig?.Value);
                     }
                 }
             }
@@ -48,8 +48,8 @@ namespace CommonModel
         {
             try
             {
-                IRule character = (IRule)(_Prototypes[type] as ICloneable)!.Clone();
-                return character;
+                IRule rule = (IRule)(_Prototypes[type] as ICloneable)!.Clone();
+                return rule;
             }
             catch (Exception)
             {

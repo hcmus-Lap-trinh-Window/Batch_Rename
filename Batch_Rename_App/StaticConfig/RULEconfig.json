@@ -2,8 +2,7 @@
   "RuleConfig": {
     "RuleFolder": "RuleDll",
     "RuleList": [
-      "Rule01",
-      "Rule02"
+      "AddPrefixRule",
     ]
   }
 }

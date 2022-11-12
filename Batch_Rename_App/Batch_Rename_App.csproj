@@ -5,7 +5,6 @@
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
-		<Version>1.0.0.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -291,7 +290,7 @@
 	  <None Update="Images\end-file-extensions\file.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="StaticConfig\RULEconfig.json">
+	  <None Update="StaticConfig\RuleConfig.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
