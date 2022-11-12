@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CommonModel
 {
-    public interface IRule : ICloneable
+    public interface IRule : ICloneable, INotifyPropertyChanged
     {
         public string Name { get; set; }
         public RuleStatus RuleState { get; set; }

@@ -41,7 +41,7 @@ namespace Batch_Rename_App
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
         }
 
         private void New_Project_Button_Click(object sender, RoutedEventArgs e)
