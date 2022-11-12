@@ -2,7 +2,9 @@
   "RuleConfig": {
     "RuleFolder": "RuleDll",
     "RuleList": [
-      "AddPrefixRule"
+      "AddPrefixRule",
+      "AddNumberCounterRule",
+      "ChangeExtensionRule"
     ]
   }
 }
