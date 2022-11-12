@@ -3,10 +3,460 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Batch_Rename_App"
+        xmlns:local="clr-namespace:Batch_Rename_App" xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="FistLoad">
-    <Grid>
-        <TextBlock Name="textBlock" FontSize="40">TEXT</TextBlock>
-    </Grid>
+        Title="Batch Rename" MinHeight="590" MinWidth="1360" ResizeMode="CanResizeWithGrip"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <local:StatusColorConverter x:Key="StatusColorConverter" />
+    </Window.Resources>
+    <DockPanel LastChildFill="True" Margin="10px">
+        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
+            <Button Cursor="Hand" Name="New_Project_Button" Click="New_Project_Button_Click" Margin="5px">
+                <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                    <Image Source="./Images/new-document.png" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock Text="New Project"/>
+                </StackPanel>
+            </Button>
+            <Button Cursor="Hand" Name="Open_Project_Button" Click="Open_Project_Button_Click" Margin="5px">
+                <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image Source="Images/open.png" Margin="0,0,10,0"/>
+                    <TextBlock Text="Open"/>
+                </StackPanel>
+            </Button>
+            <Button Cursor="Hand" Name="Save_Project_Button" Click="Save_Project_Button_Click" Margin="5px">
+                <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image Source="Images/save.png" Margin="0,0,10,0"/>
+                    <TextBlock Text="Save"/>
+                </StackPanel>
+            </Button>
+            <Button Cursor="Hand" Name="Save_As_Project_Button" Click="Save_As_Project_Button_Click" Margin="5px">
+                <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image Source="Images/save.png" Margin="0,0,10,0"/>
+                    <TextBlock Text="Save as"/>
+                </StackPanel>
+            </Button>
+            <StackPanel Orientation="Horizontal" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <CheckBox Cursor="Hand" Name="AutoSave" Unchecked="Auto_Save_UnChecked" Margin="5,0,0,0" Checked="Auto_Save_Checked" HorizontalAlignment="Stretch" Height="22"  />
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0">Auto save</TextBlock>
+            </StackPanel>
+            
+            
+
+        </StackPanel>
+        <DockPanel LastChildFill="True">
+
+            <DockPanel DockPanel.Dock="Left" LastChildFill="True">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
+                           DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center"  Text="Preset: " Margin="0,0,16,0"/>
+                    <hc:ComboBox Name="PresetComboBox" Width="163" hc:InfoElement.Placeholder="Add your presets" SelectionChanged="PresetComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
+                    <Button Cursor="Hand" Name="Clear_All_Preset_Button" Click="Clear_All_Preset_Button_Click" Margin="5px" Width="110">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                            <Image Source="Images/dust.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="Clear Presets"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,5"
+                            DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center" Text="Add Rule: "/>
+                    <hc:ComboBox Name="RuleComboBox" Width="163" hc:InfoElement.Placeholder="Add your rules"  SelectionChanged="RuleComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
+                    <Button Cursor="Hand" Name="Browse_Rule_Button" Click="Browse_Rule_Button_Click" Margin="5px" Width="110">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                            <TextBlock Text="Browse..."/>
+                        </StackPanel>
+                    </Button>
+
+                </StackPanel>
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,5"
+                            DockPanel.Dock="Top">
+                    <Button Cursor="Hand" Name="Clear_All_Rule_Button" Click="Clear_All_Rule_Button_Click" Margin="5px" DockPanel.Dock="Left">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Images/clear.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="Clear All Rules"/>
+                        </StackPanel>
+                    </Button>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="5 0 0 0">
+                        <CheckBox Cursor="Hand" Name="All_Rule" Unchecked="All_Rule_Unchecked" Margin="5,0,0,0" Checked="All_Rule_Checked" HorizontalAlignment="Stretch" Height="22"  />
+                        <TextBlock VerticalAlignment="Center" Width="60" HorizontalAlignment="Right" Margin="7px">All Rules</TextBlock>
+                    </StackPanel>
+                </DockPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
+                            DockPanel.Dock="Bottom">
+                    <TextBlock VerticalAlignment="Center"  Text="Preset Name: " Margin="0,0,5,0"/>
+                    <TextBox x:Name="presetNameInput" Width="142" Height="30" Margin="0,0,5,0"></TextBox>
+
+                    <Button Click="SaveRule_Click" Width="120" Margin="5px">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Images/save.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="Save Preset"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <ListView 
+                SelectionMode="Multiple"
+                SelectionChanged="RuleList_SelectionChanged" 
+                Margin="5,0,5,0"
+                Name="RuleList"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView.Resources>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Visibility" Value="Collapsed" />
+
+                        </Style>
+                        <!--Layout for Default Item-->
+                        <DataTemplate x:Key="DefaultItemTemplate">
+                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                                <Grid Height="30" Width="310">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  Width="*"/>
+                                        <ColumnDefinition  Width="5*"/>
+                                        <ColumnDefinition  Width="*"/>
+                                        <ColumnDefinition  Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/down-arrow.png" HorizontalAlignment="Center"/>
+                                    <TextBlock  Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Center" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                    <CheckBox IsChecked="{Binding IsInUse}" Checked="Use_Rule_Checkbox_Checked" Unchecked="Use_Rule_Checkbox_Unchecked" CommandParameter="{Binding}" Grid.Column="2" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
+                                    <Button x:Name="Remove_Rule_Button" CommandParameter="{Binding}" Click="Remove_Rule_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Image Source="/Images/clear.png"/>
+                                    </Button>
+                                </Grid>
+                                <UserControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" Name="ConfigurationUI" Content="{Binding ConfigurationUI}"></UserControl>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <!--Layout for Selected Item-->
+                        <DataTemplate x:Key="SelectedItemTemplate">
+                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Grid Height="30" Width="310">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  Width="*"/>
+                                        <ColumnDefinition  Width="5*"/>
+                                        <ColumnDefinition  Width="*"/>
+                                        <ColumnDefinition  Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/up-arrow.png" HorizontalAlignment="Center"/>
+                                    <TextBlock  Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Center" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                    <CheckBox IsChecked="{Binding IsInUse}"  Checked="Use_Rule_Checkbox_Checked" Unchecked="Use_Rule_Checkbox_Unchecked" CommandParameter="{Binding}" Grid.Column="2" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
+                                    <Button x:Name="Remove_Rule_Button" CommandParameter="{Binding}" Click="Remove_Rule_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Image Source="/Images/clear.png"/>
+                                    </Button>
+                                </Grid>
+                                <UserControl Height="160" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" Name="ConfigurationUI" Content="{Binding ConfigurationUI}"></UserControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.Background>
+                        <SolidColorBrush Color="#FFD7E4F2"/>
+                    </ListView.Background>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="Margin" Value="0,0,0,0"/>
+                            <Setter Property="MinHeight" Value="40"/>
+                            <Setter Property="MaxHeight" Value="40"/>
+                            <Setter Property="VerticalContentAlignment" Value="Top"/>
+                            <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="AllowDrop" Value="true"/>
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_MouseLeftButtonDown"/>
+                            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBoxItem_MouseLeftButtonUp"/>
+                            <EventSetter Event="PreviewMouseMove" Handler="ListBoxItem_MouseMove"/>
+                            <EventSetter Event="Drop" Handler="ListBoxItem_Drop"/>
+                            <EventSetter Event="PreviewMouseRightButtonDown"  Handler="OnPreviewMouseDown"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected"  Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="40" To="195" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="40" To="195" Duration="0:0:0.5" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="195" To="40" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="195" To="40" Duration="0:0:0.5" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                    <Setter Property="ContentTemplate" Value="{StaticResource SelectedItemTemplate}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </DockPanel>
+
+            <TabControl DockPanel.Dock="Right">
+                <TabItem Header="Rename File">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="0,9,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Click="AddBatchingFile_Click" Width="160" Margin="5,5,5,5">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/plus.png" Margin="0,0,0,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock Text="Add Batching File(s)" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Click="ClearAllFile_Click" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/clear.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" />
+                                        <TextBlock Text="Clear All"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Cursor="Hand" Click="StartBatching_Click" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/batch.png" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Start Batching"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Cursor="Hand" Click="StartBatchingToFolder_Click" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/batching-folder.png" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Start Batching To Folder"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                        </DockPanel>
+                        <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" MinHeight="35">
+                            <StackPanel DockPanel.Dock="Left" Orientation ="Horizontal" HorizontalAlignment="Left" Margin="10 0 0 0">
+                                <hc:Pagination Name="FilePagination" AllowDrop="True" DragOver="DragOverFilePage" IsJumpEnabled="True" MaxPageInterval ="2" PageUpdated="page_FilePageUpdated" PageIndex="1" />
+                            </StackPanel>
+                            <DockPanel DockPanel.Dock="Right" Width="508px" Margin="5px" HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <TextBlock Text="Status:" Margin="0 0 20 0"></TextBlock>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                        <Image Source="Images/success-file.png" Height="20px" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="NumberOfBatchingFiles" Text="{Binding}" d:Text="0" Foreground="Green"></TextBlock>
+                                        <TextBlock Text=" Batching Successful " Foreground="Green"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                        <Image Source="Images/error.png" Height="20px" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="NumberOfErrorFiles" Text="{Binding}" d:Text="0" Foreground="Red" ></TextBlock>
+                                        <TextBlock Text=" Error Files" Foreground="Red"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <Image Source="Images/file.png" Height="20px" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="NumberOfFiles" Text="{Binding}" d:Text="0" Foreground="Blue"></TextBlock>
+                                        <TextBlock Text=" Total Files "  Foreground="Blue"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DockPanel>
+                        </DockPanel>
+
+                        <ListView x:Name="FileList" Margin="5px" AllowDrop="True"  DragOver="DragOverFileList" Drop="DropFileList" Background="#FFD7E4F2" >
+                            <ListView.Resources>
+                                <ContextMenu x:Key="ItemContextMenu">
+                                    <MenuItem Header="Open This File" Click="openThisFile_Click">
+                                        <MenuItem.Icon>
+                                            <Image Source="Images/open.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Open In File Explorer" Click="openInFileExplorer_Click" >
+                                        <MenuItem.Icon>
+                                            <Image Source="Images/browser.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete Path" Click="deleteFileMenu_Click" >
+                                        <MenuItem.Icon>
+                                            <Image Source="Images/clear.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.Resources>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource ListViewItemBaseStyle}" >
+                                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
+                                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="FileList_PreviewMouseLeftButtonDown"/>
+                                    <EventSetter Event="Drop" Handler="FileList_Drop"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Image Source="{Binding fileimage}" Height="30px"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="150" Header="File Name" DisplayMemberBinding="{Binding filename}"/>
+                                    <GridViewColumn Width="150" Header="New File Name" DisplayMemberBinding="{Binding newfilename}"/>
+                                    <GridViewColumn Width="110" Header="File Extendsion" DisplayMemberBinding="{Binding fileextension}"/>
+                                    <GridViewColumn Width="280" Header="File Path" DisplayMemberBinding="{Binding filepath}"/>
+                                    <GridViewColumn Width="250" Header="Status">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock x:Name="StatusText" Text="{Binding status}" FontWeight="Bold" Foreground="{Binding status, Converter={StaticResource StatusColorConverter}}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+
+                <TabItem Header="Rename Folder">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="0,9,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Click="AddBatchingFolder_Click" Width="170" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/plus.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock Text="Add Batching Folder(s)"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button  Click="ClearAllFolder_Click" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/clear.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock Text="Clear All"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Cursor="Hand" Click="StartBatching_Click" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/batch.png" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Start Batching"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Cursor="Hand" Click="StartBatchingToFolder_Click" Margin="5px">
+                                    <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Images/batching-folder.png" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Start Batching To Folder"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" MinHeight="35">
+                            <StackPanel DockPanel.Dock="Left" Orientation ="Horizontal" HorizontalAlignment="Left" Margin="10 0 0 0">
+                                <hc:Pagination Name="FolderPagination" AllowDrop="True"  DragOver="DragOverFolderPage" IsJumpEnabled="True" MaxPageInterval ="2" PageUpdated="page_FolderPageUpdated" PageIndex="1" />
+                            </StackPanel>
+                            <DockPanel Width="508px" Margin="5px" HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" >
+                                    <TextBlock Text="Status:" Margin="0 0 20 0"></TextBlock>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                        <Image Source="Images/success-folder.png" Height="20px" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="NumberOfBatchingFolders" Text="{Binding}" d:Text="0"  Foreground="Green"></TextBlock>
+                                        <TextBlock Text=" Batching Successful " Foreground="Green"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                        <Image Source="Images/error.png" Height="20px" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="NumberOfErrorFolders" Text="{Binding}"  d:Text="0" Foreground="Red" ></TextBlock>
+                                        <TextBlock Text=" Error Folders" Foreground="Red"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <Image Source="Images/folder.png" Height="20px" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="NumberOfFolders" Text="{Binding}" d:Text="0"  Foreground="Blue"></TextBlock>
+                                        <TextBlock Text=" Total Folders "  Foreground="Blue"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DockPanel>
+                        </DockPanel>
+                        <ListView x:Name="FolderList" Margin="5px" AllowDrop="True" DragOver="DragOverFolderList" Drop="DropFolderList" Background="#FFD7E4F2">
+                            <ListView.Resources>
+                                <ContextMenu x:Key="ItemContextMenu">
+                                    <MenuItem Header="Open In File Explorer" Click="openInFolderExplorer_Click">
+                                        <MenuItem.Icon>
+                                            <Image Source="Images/browser.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
+                                    <MenuItem Header="Delete Path" Click="deleteFolderMenu_Click">
+                                        <MenuItem.Icon>
+                                            <Image Source="Images/clear.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.Resources>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource ListViewItemBaseStyle}" >
+                                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
+                                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="FolderList_PreviewMouseLeftButtonDown"/>
+                                    <EventSetter Event="Drop" Handler="FolderList_Drop"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+
+                            <ListView.View>
+                                <GridView x:Name="FileGrid" >
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Image Source="{Binding folderimage}" RenderOptions.BitmapScalingMode="HighQuality" Height="30px"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="150" Header="Folder Name"  DisplayMemberBinding="{Binding foldername}"/>
+                                    <GridViewColumn Width="150" Header="New folder name" DisplayMemberBinding="{Binding newfoldername}"/>
+                                    <GridViewColumn Width="400" Header="Folder Path" DisplayMemberBinding="{Binding folderpath}"/>
+                                    <GridViewColumn Width="250" Header="Status">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock x:Name="StatusText" Text="{Binding status}" FontWeight="Bold" Foreground="{Binding status, Converter={StaticResource StatusColorConverter}}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+
+            </TabControl>
+        </DockPanel>
+    </DockPanel>
 </Window>

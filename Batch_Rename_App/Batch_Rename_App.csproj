@@ -17,8 +17,270 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Images\add-file.png" />
+	  <None Remove="Images\batch.png" />
+	  <None Remove="Images\batching-folder.png" />
+	  <None Remove="Images\browser.png" />
+	  <None Remove="Images\clear.png" />
+	  <None Remove="Images\down-arrow.png" />
+	  <None Remove="Images\dust.png" />
+	  <None Remove="Images\end-file-extensions\ai-file.png" />
+	  <None Remove="Images\end-file-extensions\bat-file.png" />
+	  <None Remove="Images\end-file-extensions\bin-file.png" />
+	  <None Remove="Images\end-file-extensions\chm-file.png" />
+	  <None Remove="Images\end-file-extensions\css-file.png" />
+	  <None Remove="Images\end-file-extensions\csv-file.png" />
+	  <None Remove="Images\end-file-extensions\cur-file.png" />
+	  <None Remove="Images\end-file-extensions\dat-file.png" />
+	  <None Remove="Images\end-file-extensions\dll-file.png" />
+	  <None Remove="Images\end-file-extensions\doc-file.png" />
+	  <None Remove="Images\end-file-extensions\docx-file.png" />
+	  <None Remove="Images\end-file-extensions\exe-file.png" />
+	  <None Remove="Images\end-file-extensions\gho-file.png" />
+	  <None Remove="Images\end-file-extensions\gif-file.png" />
+	  <None Remove="Images\end-file-extensions\ico-file.png" />
+	  <None Remove="Images\end-file-extensions\ink-file.png" />
+	  <None Remove="Images\end-file-extensions\jar-file.png" />
+	  <None Remove="Images\end-file-extensions\java-file.png" />
+	  <None Remove="Images\end-file-extensions\jpeg-file.png" />
+	  <None Remove="Images\end-file-extensions\jpg-file.png" />
+	  <None Remove="Images\end-file-extensions\mov-file.png" />
+	  <None Remove="Images\end-file-extensions\mp3-file.png" />
+	  <None Remove="Images\end-file-extensions\mp4-file.png" />
+	  <None Remove="Images\end-file-extensions\mpg-file.png" />
+	  <None Remove="Images\end-file-extensions\obj-file.png" />
+	  <None Remove="Images\end-file-extensions\odt-file.png" />
+	  <None Remove="Images\end-file-extensions\pdf-file.png" />
+	  <None Remove="Images\end-file-extensions\php-file.png" />
+	  <None Remove="Images\end-file-extensions\png-file.png" />
+	  <None Remove="Images\end-file-extensions\ppt-file.png" />
+	  <None Remove="Images\end-file-extensions\prg-file.png" />
+	  <None Remove="Images\end-file-extensions\ps-file.png" />
+	  <None Remove="Images\end-file-extensions\ra-file.png" />
+	  <None Remove="Images\end-file-extensions\rar-file.png" />
+	  <None Remove="Images\end-file-extensions\raw-file.png" />
+	  <None Remove="Images\end-file-extensions\rss-file.png" />
+	  <None Remove="Images\end-file-extensions\scr-file.png" />
+	  <None Remove="Images\end-file-extensions\sql-file.png" />
+	  <None Remove="Images\end-file-extensions\tif-file.png" />
+	  <None Remove="Images\end-file-extensions\txt-file.png" />
+	  <None Remove="Images\end-file-extensions\wav-file.png" />
+	  <None Remove="Images\end-file-extensions\wmv-file.png" />
+	  <None Remove="Images\end-file-extensions\xls-file.png" />
+	  <None Remove="Images\end-file-extensions\xml-file.png" />
+	  <None Remove="Images\end-file-extensions\xvid-file.png" />
+	  <None Remove="Images\end-file-extensions\zip-file.png" />
+	  <None Remove="Images\error.png" />
+	  <None Remove="Images\file.png" />
+	  <None Remove="Images\folder.png" />
+	  <None Remove="Images\new-document.png" />
+	  <None Remove="Images\open.png" />
+	  <None Remove="Images\plus.png" />
+	  <None Remove="Images\save.png" />
+	  <None Remove="Images\success-file.png" />
+	  <None Remove="Images\success-folder.png" />
+	  <None Remove="Images\up-arrow.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Images\add-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\batch.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\batching-folder.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\browser.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\clear.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\down-arrow.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\dust.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\ai-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\bat-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\bin-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\chm-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\css-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\csv-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\cur-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\dat-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\dll-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\doc-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\docx-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\exe-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\gho-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\gif-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\ico-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\ink-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\jar-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\java-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\jpeg-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\jpg-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\mov-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\mp3-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\mp4-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\mpg-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\obj-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\odt-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\pdf-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\php-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\png-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\ppt-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\prg-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\ps-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\ra-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\rar-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\raw-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\rss-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\scr-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\sql-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\tif-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\txt-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\wav-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\wmv-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\xls-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\xml-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\xvid-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\zip-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\error.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\folder.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\new-document.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\open.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\plus.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\save.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\success-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\success-folder.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\up-arrow.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\CommonModel\CommonModel.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="HandyControl" Version="3.3.0" />
+		<PackageReference Include="HandyControl.Lang.en" Version="3.3.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
@@ -26,6 +288,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Images\end-file-extensions\file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="StaticConfig\RULEconfig.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
