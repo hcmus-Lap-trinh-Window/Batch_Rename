@@ -20,6 +20,7 @@ namespace CommonModel
 
         public AddPrefixRule()
         {
+            this.Name = "Add Prefix";
             Prefix = String.Empty;
             var instance = this;
             ConfigurationUI = new AddPrefixRuleWindow(ref instance);

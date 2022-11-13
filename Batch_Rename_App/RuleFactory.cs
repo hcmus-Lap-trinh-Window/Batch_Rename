@@ -97,11 +97,11 @@ namespace CommonModel
                     if (type.IsClass && typeof(IRule).IsAssignableFrom(type))
                     {
                         IRule ruleInstance = (IRule)Activator.CreateInstance(type);
-                        if (_Prototypes.ContainsKey(ruleName))
+                        if (_Prototypes.ContainsKey(ruleInstance.Name))
                         {
                             return false;
                         }
-                        _Prototypes.Add(ruleName, ruleInstance);
+                        _Prototypes.Add(ruleInstance.Name, ruleInstance);
                     }
                 }
                 return true;
