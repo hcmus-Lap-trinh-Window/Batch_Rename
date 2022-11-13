@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Batch_Rename_App
+namespace Converter
 {
     internal class StatusColorConverter : IValueConverter
     {
