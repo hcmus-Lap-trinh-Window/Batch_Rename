@@ -14,7 +14,7 @@ namespace CommonModel
     {
         public string Name { get; set; }
         public string Extension { get; set; }
-        public RuleStatus RuleState { get; set; }
+        public bool IsInUse { get; set; }
         public ChangeExtensionRuleWindow ConfigUI { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;

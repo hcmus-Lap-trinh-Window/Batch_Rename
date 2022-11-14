@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -23,13 +24,11 @@ using System.Windows.Shapes;
 
 namespace Batch_Rename_App
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly RuleFactory _RuleFactory;
         private readonly RuleConfig _RuleConfig;
+        public ObservableCollection<IRule> _RuleList { get; private set; }
 
         public MainWindow(IOptionsSnapshot<RuleConfig> ruleConfig)
         {
@@ -38,10 +37,12 @@ namespace Batch_Rename_App
             InitializeComponent();
         }
 
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this._RuleList = new ObservableCollection<IRule>();
+            
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
+            RuleList.ItemsSource = this._RuleList;
         }
 
         private void New_Project_Button_Click(object sender, RoutedEventArgs e)
@@ -86,7 +87,9 @@ namespace Batch_Rename_App
 
         private void RuleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            var selectedRuleName = (string)RuleComboBox.SelectedItem;
+            var selectedRuleInstance = _RuleFactory.CreateRuleInstance(selectedRuleName);
+            _RuleList.Add(selectedRuleInstance);
         }
 
         private void Browse_Rule_Button_Click(object sender, RoutedEventArgs e)
@@ -161,7 +164,7 @@ namespace Batch_Rename_App
 
         private void AddBatchingFile_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void ClearAllFile_Click(object sender, RoutedEventArgs e)

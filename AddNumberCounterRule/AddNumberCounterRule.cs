@@ -13,7 +13,7 @@ namespace CommonModel
         public int Step { get; set; }
         public int NumOfDigits { get; set; }
         public AddNumberCounterRuleWindow ConfigUI { get; set; }
-        public RuleStatus RuleState { get; set; }
+        public bool IsInUse { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public AddNumberCounterRule()

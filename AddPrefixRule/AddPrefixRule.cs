@@ -14,7 +14,7 @@ namespace CommonModel
     public class AddPrefixRule : IRule
     {
         public string Name { get; set; }
-        public RuleStatus RuleState { get; set; }
+        public bool IsInUse { get; set; }
         public string Prefix { get; set; }
         public AddPrefixRuleWindow ConfigurationUI { get; set; }
 
