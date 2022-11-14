@@ -1,0 +1,10 @@
+{
+  "RuleConfig": {
+    "RuleFolder": "RuleDll",
+    "RuleList": [
+      "AddPrefixRule",
+      "AddNumberCounterRule",
+      "ChangeExtensionRule"
+    ]
+  }
+}

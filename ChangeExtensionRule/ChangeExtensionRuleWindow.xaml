@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="RuleWindow.ChangeExtensionRuleWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             HorizontalContentAlignment="Stretch"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             Background="White"
+             Loaded="UserControl_Loaded">
+    <StackPanel Margin="10">
+        <TextBlock HorizontalAlignment="left" FontWeight="Bold">Enter new extension (without dot):</TextBlock>
+        <TextBox HorizontalAlignment="Stretch" x:Name="extensionInput" TextChanged="extensionInput_TextChanged" Text="{Binding Extension}"></TextBox>
+    </StackPanel>
+
+</UserControl>
