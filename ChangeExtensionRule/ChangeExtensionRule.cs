@@ -15,7 +15,7 @@ namespace CommonModel
         public string Name { get; set; }
         public string Extension { get; set; }
         public bool IsInUse { get; set; }
-        public ChangeExtensionRuleWindow ConfigUI { get; set; }
+        public ChangeExtensionRuleWindow ConfigurationUI { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public ChangeExtensionRule()
@@ -23,7 +23,7 @@ namespace CommonModel
             this.Name = "Change Extension";
             this.Extension = "";
             var instance = this;
-            this.ConfigUI = new ChangeExtensionRuleWindow(ref instance);
+            this.ConfigurationUI = new ChangeExtensionRuleWindow(ref instance);
         }
 
         public string Apply(string originString, object parameters)

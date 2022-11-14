@@ -9,9 +9,6 @@
              VerticalAlignment="Stretch"
              Background="White"
              Loaded="UserControl_Loaded">
-    <!--<UserControl.Resources>
-        <local:CheckboxValueConverter x:Key="checkboxValueConverter"/>
-    </UserControl.Resources>-->
     <StackPanel Margin="10" >
         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" >
             <TextBlock Margin="0,5,0,0"  FontWeight="Bold" HorizontalAlignment="left">Starting at:</TextBlock>

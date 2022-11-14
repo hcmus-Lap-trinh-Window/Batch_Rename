@@ -12,18 +12,19 @@ namespace CommonModel
         public int Start { get;set; }
         public int Step { get; set; }
         public int NumOfDigits { get; set; }
-        public AddNumberCounterRuleWindow ConfigUI { get; set; }
+        public AddNumberCounterRuleWindow ConfigurationUI { get; set; }
         public bool IsInUse { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
         public AddNumberCounterRule()
         {
-            this.Name = "Add Number Counter";
-            this.Step = 1;
-            this.Start = 1;
-            this.NumOfDigits = 0;
+            Name = "Add Number Counter";
+            Step = 1;
+            Start = 1;
+            NumOfDigits = 0;
             var instance = this;
-            this.ConfigUI = new AddNumberCounterRuleWindow(ref instance);
+            ConfigurationUI = new AddNumberCounterRuleWindow(ref instance);
         }
 
         public string Apply(string originString, object parameters)
