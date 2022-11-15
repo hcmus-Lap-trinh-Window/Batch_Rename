@@ -1,11 +1,14 @@
-﻿using CommonModel;
+﻿using Batch_Rename_App.Models;
+using CommonModel;
 using Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,6 +32,14 @@ namespace Batch_Rename_App
         private readonly RuleFactory _RuleFactory;
         private readonly RuleConfig _RuleConfig;
         public ObservableCollection<IRule> _RuleList { get; private set; }
+        public BindingList<MyFile> FileList = new BindingList<MyFile>();
+        public BindingList<MyFolder> FolderList = new BindingList<MyFolder>();
+
+
+        private readonly int itemPerPage = 2;
+        private int currentFilePage = 1;
+        private int currentFolderPage = 1;
+
 
         public MainWindow(IOptionsSnapshot<RuleConfig> ruleConfig)
         {
@@ -43,6 +54,15 @@ namespace Batch_Rename_App
             
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
             RuleList.ItemsSource = this._RuleList;
+
+            // Set status file and folder to 0
+            NumberOfFiles.DataContext = 0;
+            NumberOfBatchingFiles.DataContext = 0;
+            NumberOfErrorFiles.DataContext = 0;
+
+            NumberOfFolders.DataContext = 0;
+            NumberOfBatchingFolders.DataContext = 0;
+            NumberOfErrorFolders.DataContext = 0;
         }
 
         private void New_Project_Button_Click(object sender, RoutedEventArgs e)
@@ -70,11 +90,6 @@ namespace Batch_Rename_App
 
         }
 
-        private void StartBatchingToFolder_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -93,21 +108,6 @@ namespace Batch_Rename_App
         }
 
         private void Browse_Rule_Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Clear_All_Rule_Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void All_Rule_Unchecked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void All_Rule_Checked(object sender, RoutedEventArgs e)
         {
 
         }
@@ -171,25 +171,61 @@ namespace Batch_Rename_App
 
         private void AddBatchingFile_Click(object sender, RoutedEventArgs e)
         {
-            
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            if(openFileDialog.ShowDialog() == true)
+            {
+                addFileToListView(openFileDialog.FileName);
+            }
+        }
+
+        private void addFileToListView(string fileNamePath)
+        {
+            if (!isFileExist(fileNamePath))
+            {
+                MyFile newFile = new MyFile(fileNamePath);
+                FileList.Add(newFile);
+            }
+            update_Filepage();
+        }
+
+        private void update_Filepage()
+        {
+            FilePagination.MaxPageCount = (int)Math.Ceiling(FileList.Count() * 1.0 / itemPerPage);
+            IEnumerable<MyFile> subFileList = FileList.Skip((currentFilePage - 1) * itemPerPage).Take(itemPerPage);
+            fileList.ItemsSource = subFileList;
+
+            int batchingSuccess = 0;
+            int batchingError = 0;
+            for (int i = 0; i < FileList.Count(); i++)
+            {
+                if (FileList[i].FileStatus.Contains("Error Files"))
+                {
+                    batchingError++;
+                }
+                else if (FileList[i].FileStatus.Contains("Batching Successful"))
+                {
+                    batchingSuccess++;
+                }
+            }
+            NumberOfFiles.DataContext = FileList.Count();
+            NumberOfBatchingFiles.DataContext = batchingSuccess;
+            NumberOfErrorFiles.DataContext = batchingError;
+        }
+
+        private bool isFileExist(string fileNamePath)
+        {
+            foreach (MyFile item in FileList)
+            {
+                if(item.FilePath.Equals(fileNamePath))
+                {
+                    return true;
+                }                
+            }
+            return false;
         }
 
         private void ClearAllFile_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void openThisFile_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void openInFileExplorer_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void deleteFileMenu_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -206,7 +242,57 @@ namespace Batch_Rename_App
 
         private void AddBatchingFolder_Click(object sender, RoutedEventArgs e)
         {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                addFolder(dialog.FileName);
+        }
 
+        private void addFolder(string folderNamePath)
+        {
+            if (!isFolderExist(folderNamePath))
+            {
+                MyFolder newfolder = new MyFolder(folderNamePath);
+                FolderList.Add(newfolder);
+            }
+            update_Folderpage();
+        }
+
+        private void update_Folderpage()
+        {
+            FolderPagination.MaxPageCount = (int)Math.Ceiling(FolderList.Count() * 1.0 / itemPerPage);
+            IEnumerable<MyFolder> subFolderList = FolderList.Skip((currentFolderPage - 1) * itemPerPage).Take(itemPerPage);
+            folderList.ItemsSource = subFolderList;
+
+            int batchingSuccess = 0;
+            int batchingError = 0;
+            for (int i = 0; i < FolderList.Count(); i++)
+            {
+                if (FolderList[i].FolderStatus.Contains("Error Folders"))
+                {
+                    batchingError++;
+                }
+                else if (FolderList[i].FolderStatus.Contains("Batching Successful"))
+                {
+                    batchingSuccess++;
+                }
+            }
+            NumberOfFolders.DataContext = FolderList.Count();
+            NumberOfBatchingFolders.DataContext = batchingSuccess;
+            NumberOfErrorFolders.DataContext = batchingError;
+        }
+
+        private bool isFolderExist(string folderNamePath)
+        {
+            foreach (MyFolder item in FolderList)
+            {
+                if(item.FolderPath.Equals(folderNamePath))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void ClearAllFolder_Click(object sender, RoutedEventArgs e)
@@ -216,7 +302,8 @@ namespace Batch_Rename_App
 
         private void page_FolderPageUpdated(object sender, HandyControl.Data.FunctionEventArgs<int> e)
         {
-
+            currentFolderPage = e.Info;
+            update_Folderpage();
         }
 
         private void openInFolderExplorer_Click(object sender, RoutedEventArgs e)
@@ -256,7 +343,8 @@ namespace Batch_Rename_App
 
         private void page_FilePageUpdated(object sender, HandyControl.Data.FunctionEventArgs<int> e)
         {
-
+            currentFilePage = e.Info;
+            update_Filepage();
         }
 
         private void DragOverFolderPage(object sender, DragEventArgs e)
