@@ -18,7 +18,6 @@
 	<ItemGroup>
 	  <None Remove="Images\add-file.png" />
 	  <None Remove="Images\batch.png" />
-	  <None Remove="Images\batching-folder.png" />
 	  <None Remove="Images\browser.png" />
 	  <None Remove="Images\clear.png" />
 	  <None Remove="Images\down-arrow.png" />
@@ -31,6 +30,7 @@
 	  <None Remove="Images\end-file-extensions\csv-file.png" />
 	  <None Remove="Images\end-file-extensions\cur-file.png" />
 	  <None Remove="Images\end-file-extensions\dat-file.png" />
+	  <None Remove="Images\end-file-extensions\default-file.png" />
 	  <None Remove="Images\end-file-extensions\dll-file.png" />
 	  <None Remove="Images\end-file-extensions\doc-file.png" />
 	  <None Remove="Images\end-file-extensions\docx-file.png" />
@@ -74,7 +74,9 @@
 	  <None Remove="Images\folder.png" />
 	  <None Remove="Images\new-document.png" />
 	  <None Remove="Images\open.png" />
+	  <None Remove="Images\play.png" />
 	  <None Remove="Images\plus.png" />
+	  <None Remove="Images\rename.png" />
 	  <None Remove="Images\save.png" />
 	  <None Remove="Images\success-file.png" />
 	  <None Remove="Images\success-folder.png" />
@@ -86,9 +88,6 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Images\batch.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Images\batching-folder.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Images\browser.png">
@@ -125,6 +124,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Images\end-file-extensions\dat-file.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\end-file-extensions\default-file.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Images\end-file-extensions\dll-file.png">
@@ -256,7 +258,13 @@
 	  <Content Include="Images\open.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
+	  <Content Include="Images\play.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	  <Content Include="Images\plus.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\rename.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Images\save.png">
@@ -284,6 +292,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="PropertyChanged.Fody" Version="4.0.3" />
+		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
