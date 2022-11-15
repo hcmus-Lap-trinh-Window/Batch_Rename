@@ -74,27 +74,8 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,5"
                             DockPanel.Dock="Top">
-<<<<<<< HEAD
-                    <Button Cursor="Hand" Name="Clear_All_Rule_Button" Click="Clear_All_Rule_Button_Click" Margin="5px" DockPanel.Dock="Left">
-                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
-                            <Image Source="Images/clear.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Text="Clear All Rules"/>
-                        </StackPanel>
-                    </Button>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="5 0 0 0">
-                        <CheckBox Cursor="Hand" Name="All_Rule" Unchecked="All_Rule_Unchecked" Margin="5,0,0,0" Checked="All_Rule_Checked" HorizontalAlignment="Stretch" Height="22"  />
-                        <TextBlock VerticalAlignment="Center" Width="60" HorizontalAlignment="Right" Margin="7px">All Rules</TextBlock>
-                    </StackPanel>
-                </DockPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
-                            DockPanel.Dock="Bottom">
-                    <TextBlock VerticalAlignment="Center"  Text="Preset Name: " Margin="0,0,5,0"/>
-                    <TextBox x:Name="presetNameInput" Width="142" Height="30" Margin="0,0,5,0" TextChanged="presetNameInput_TextChanged"></TextBox>
-=======
                     <TextBlock VerticalAlignment="Center"  Text="Preset: " Margin="0, 0, 15, 0"/>
                     <TextBox x:Name="presetNameInput" Width="163" Height="30" Margin="5"></TextBox>
->>>>>>> master
-
                     <Button Cursor="Hand" Click="SaveRule_Click" Width="120" Margin="5px">
                         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
                             <Image Source="Images/save.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
