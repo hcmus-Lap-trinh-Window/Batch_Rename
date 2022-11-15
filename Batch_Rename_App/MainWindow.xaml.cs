@@ -114,7 +114,18 @@ namespace Batch_Rename_App
 
         private void SaveRule_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                var presetName = presetNameInput.Text;
+                if (presetName.IsNullOrWhiteSpace())
+                {
 
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
         }
 
         private void RuleList_SelectionChanged(object sender, SelectionChangedEventArgs e)

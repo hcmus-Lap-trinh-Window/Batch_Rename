@@ -87,7 +87,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
                             DockPanel.Dock="Bottom">
                     <TextBlock VerticalAlignment="Center"  Text="Preset Name: " Margin="0,0,5,0"/>
-                    <TextBox x:Name="presetNameInput" Width="142" Height="30" Margin="0,0,5,0"></TextBox>
+                    <TextBox x:Name="presetNameInput" Width="142" Height="30" Margin="0,0,5,0" TextChanged="presetNameInput_TextChanged"></TextBox>
 
                     <Button Click="SaveRule_Click" Width="120" Margin="5px">
                         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
