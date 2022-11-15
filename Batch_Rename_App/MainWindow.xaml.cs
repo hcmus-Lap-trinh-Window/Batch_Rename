@@ -116,11 +116,7 @@ namespace Batch_Rename_App
         {
             try
             {
-                var presetName = presetNameInput.Text;
-                if (presetName.IsNullOrWhiteSpace())
-                {
 
-                }
             }
             catch (Exception ex)
             {

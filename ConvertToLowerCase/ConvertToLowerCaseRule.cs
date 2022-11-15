@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CommonModel
 {
@@ -32,7 +33,7 @@ namespace CommonModel
                 {
                     throw new Exception("ConvertToLowerCase Failed. File name cannot be null!");
                 }
-                result = originString.ToLower().Trim();
+                result = Regex.Replace(originString.ToLower(), @"\s+", "");
             }
             catch(Exception ex)
             {
