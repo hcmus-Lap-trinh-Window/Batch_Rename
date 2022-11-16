@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Batch_Rename_App" xmlns:hc="https://handyorg.github.io/handycontrol"
-        xmlns:converter ="clr-namespace:Converter"
+        xmlns:local="clr-namespace:Batch_Rename_App.Converters" xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
         Icon="/Images/rename.png"
         Title="Batch Rename" MinHeight="650" MinWidth="1360" ResizeMode="CanResizeWithGrip"
         Loaded="Window_Loaded">
     <Window.Resources>
-        <converter:StatusColorConverter x:Key="StatusColorConverter" />
+        <local:StatusColorConverter x:Key="StatusColorConverter" />
+        <local:ImageExtensionConverter x:Key="ImageExtensionConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="True" Margin="10px">
         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
@@ -290,7 +290,7 @@
                                     <GridViewColumn>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Image Source="{Binding FileImage}" Height="30px"/>
+                                                <Image Source="{Binding FileExtension, Converter={StaticResource ImageExtensionConverter}}" Height="30px"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Batch_Rename_App.Models
+namespace CommonModel.Model
 {
     public class MyFolder : INotifyPropertyChanged
     {

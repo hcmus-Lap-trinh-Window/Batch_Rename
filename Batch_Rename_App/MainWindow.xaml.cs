@@ -1,5 +1,5 @@
-﻿using Batch_Rename_App.Models;
-using CommonModel;
+﻿using CommonModel;
+using CommonModel.Model;
 using Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -183,8 +183,11 @@ namespace Batch_Rename_App
         {
             if (!isFileExist(fileNamePath))
             {
-                MyFile newFile = new MyFile(fileNamePath);
-                FileList.Add(newFile);
+                if(File.Exists(fileNamePath))
+                {
+                    MyFile newFile = new MyFile(fileNamePath);
+                    FileList.Add(newFile);
+                }
             }
             update_Filepage();
         }

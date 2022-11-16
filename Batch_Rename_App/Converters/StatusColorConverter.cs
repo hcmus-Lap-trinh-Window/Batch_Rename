@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Converter
+namespace Batch_Rename_App.Converters
 {
     internal class StatusColorConverter : IValueConverter
     {
@@ -15,7 +15,7 @@ namespace Converter
         {
             if (value is string)
             {
-                if (value.ToString().Contains("Error:"))
+                if (value.ToString().Contains("Error"))
                 {
                     return new SolidColorBrush(Colors.IndianRed);
                 }
