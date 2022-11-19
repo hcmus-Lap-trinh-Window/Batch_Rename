@@ -36,7 +36,7 @@ namespace Batch_Rename_App
         public BindingList<MyFolder> FolderList = new BindingList<MyFolder>();
 
 
-        private readonly int itemPerPage = 2;
+        private readonly int itemPerPage = 5;
         private int currentFilePage = 1;
         private int currentFolderPage = 1;
 
@@ -172,10 +172,14 @@ namespace Batch_Rename_App
         private void AddBatchingFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
 
             if(openFileDialog.ShowDialog() == true)
             {
-                addFileToListView(openFileDialog.FileName);
+                foreach (string item in openFileDialog.FileNames)
+                {
+                    addFileToListView(item);
+                }
             }
         }
 
@@ -247,8 +251,15 @@ namespace Batch_Rename_App
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
+            dialog.Multiselect = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                addFolder(dialog.FileName);
+            {
+                foreach (string item in dialog.FileNames)
+                {
+                    addFolder(item);
+                }
+            }
+                
         }
 
         private void addFolder(string folderNamePath)

@@ -1,42 +1,38 @@
 ﻿using RuleWindow;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
+using System.Configuration;
 
 namespace CommonModel
 {
     /// <summary>
-    /// Thêm tiền tố cho tên file
+    /// Thêm hậu tố cho tên file
     /// </summary>
-    public class AddPrefixRule : IRule
+    public class AddSuffixRule : IRule
     {
-        public string Name { get; set; }
-        public bool IsInUse { get; set; }
-        public string Prefix { get; set; }
-        public AddPrefixRuleWindow ConfigurationUI { get; set; }
-
-        public AddPrefixRule()
-        {
-            this.Name = "Add Prefix";
-            Prefix = String.Empty;
-            var instance = this;
-            ConfigurationUI = new AddPrefixRuleWindow(ref instance);
-        }
-
+        public string Name { get ; set ; }
+        public bool IsInUse { get ; set ; }
+        public string Suffix { get; set; }
+        public AddSuffixRuleWindow ConfigurationUI { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
+        public AddSuffixRule()
+        {
+            this.Name = "Add Suffix";
+            Suffix = String.Empty;
+            var instance = this;
+            ConfigurationUI = new AddSuffixRuleWindow(ref instance);
+        }
 
         public string Apply(string originalValue, object parameters)
         {
             try
             {
-                if(this.Prefix.IsNullOrWhiteSpace())
+                if (this.Suffix.IsNullOrWhiteSpace())
                 {
-                    throw new Exception($"Prefix value là null, rỗng hoặc khoảng trắng.");
+                    throw new Exception($"Suffix value là null, rỗng hoặc khoảng trắng.");
                 }
-                var newValue = Prefix + originalValue;
+                var newValue = originalValue + Suffix;
                 return newValue;
             }
             catch (Exception ex)
@@ -49,12 +45,12 @@ namespace CommonModel
         {
             try
             {
-                if(orginStringList == null || orginStringList.Count < 1)
+                if (orginStringList == null || orginStringList.Count < 1)
                 {
                     throw new Exception("Apply failed. originStringList is null or empty");
                 }
                 var resultStringList = new List<string>();
-                foreach(var orginString in orginStringList)
+                foreach (var orginString in orginStringList)
                 {
                     var resultString = this.Apply(orginString, parameters);
                     resultStringList.Add(resultString);
@@ -63,7 +59,7 @@ namespace CommonModel
             }
             catch (Exception ex)
             {
-                throw new Exception (ex.Message, ex.InnerException ?? ex);
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
         }
 
@@ -71,10 +67,5 @@ namespace CommonModel
         {
             return MemberwiseClone();
         }
-    }
-
-    public class AddPrefixRuleData
-    {
-        public string Prefix { get; set; }
     }
 }

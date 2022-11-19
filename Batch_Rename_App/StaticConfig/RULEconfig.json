@@ -5,7 +5,8 @@
       "AddPrefixRule",
       "AddNumberCounterRule",
       "ChangeExtensionRule",
-      "ConvertToLowerCase"
+      "ConvertToLowerCase",
+      "ReplaceSpecialCharacterRule"
     ]
   }
 }

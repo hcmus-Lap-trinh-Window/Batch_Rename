@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="RuleWindow.AddSuffixRuleWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RuleWindow"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Margin="10">
+        <TextBlock FontWeight="Bold" HorizontalAlignment="left">Add Suffix:</TextBlock>
+        <TextBox x:Name="suffixInput" Text="{Binding Suffix}" TextChanged="suffixInput_TextChanged"
+                 HorizontalAlignment="Stretch"/>
+    </StackPanel>
+</UserControl>
