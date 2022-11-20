@@ -39,10 +39,6 @@ namespace CommonModel
             List<string> result = new List<string>();
             try
             {
-                if (parameters == null)
-                {
-                    throw new Exception($"ChangeExtensionRule failed. Parameters cannot be null");
-                }
                 if (!ExtensionValidation(this.Extension))
                 {
                     throw new Exception($"ChangeExtensionRule failed. Extension not accepted");

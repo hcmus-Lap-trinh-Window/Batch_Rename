@@ -20,12 +20,19 @@ namespace CommonModel
         /// <returns></returns>
         public static bool FileWithExtensionValidation(this string outputName, string ext)
         {
-            bool result = false;
-            if (outputName.Contains(ext, StringComparison.OrdinalIgnoreCase) && outputName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+            try
             {
-                result = true;
+                bool result = false;
+                if (outputName.Contains(ext, StringComparison.OrdinalIgnoreCase) && outputName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                {
+                    result = true;
+                }
+                return result;
             }
-            return result;
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
         }
         /// <summary>
         /// Get File name only, not include extension

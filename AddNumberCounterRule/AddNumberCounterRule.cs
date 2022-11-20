@@ -41,10 +41,6 @@ namespace CommonModel
             List<string> result = new List<string>();
             try
             {
-                if (parameters == null)
-                {
-                    throw new Exception("AddNumberCounterRule failed. Parameters cannot be null");
-                }
                 if (orginStringList != null && orginStringList.Count > 0)
                 {
                     int indexOfFile = 0;
