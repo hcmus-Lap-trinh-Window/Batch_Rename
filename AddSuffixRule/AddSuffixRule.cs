@@ -1,8 +1,11 @@
-﻿using RuleWindow;
+﻿using CommonModel.Model;
+using RuleWindow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CommonModel
 {
@@ -14,6 +17,7 @@ namespace CommonModel
         public string Name { get ; set ; }
         public bool IsInUse { get ; set ; }
         public string Suffix { get; set; }
+        [JsonIgnore]
         public AddSuffixRuleWindow ConfigurationUI { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
         public AddSuffixRule()
@@ -66,6 +70,29 @@ namespace CommonModel
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public IRule Clone(RuleJson ruleJson)
+        {
+            AddSuffixRule instance = null;
+            try
+            {
+                instance = JsonSerializer.Deserialize<AddSuffixRule>(ruleJson.Json);
+                if (instance != null)
+                {
+                    instance.ConfigurationUI = new AddSuffixRuleWindow(ref instance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return instance;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }

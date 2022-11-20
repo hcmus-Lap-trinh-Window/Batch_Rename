@@ -1,10 +1,13 @@
-﻿using RuleWindow;
+﻿using CommonModel.Model;
+using RuleWindow;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CommonModel
 {
@@ -16,6 +19,7 @@ namespace CommonModel
         public string Name { get; set; }
         public bool IsInUse { get; set; }
         public string Prefix { get; set; }
+        [JsonIgnore]
         public AddPrefixRuleWindow ConfigurationUI { get; set; }
 
         public AddPrefixRule()
@@ -70,6 +74,29 @@ namespace CommonModel
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public IRule Clone(RuleJson ruleJson)
+        {
+            AddPrefixRule instance = null;
+            try
+            {
+                instance = JsonSerializer.Deserialize<AddPrefixRule>(ruleJson.Json);
+                if (instance != null)
+                {
+                    instance.ConfigurationUI = new AddPrefixRuleWindow(ref instance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return instance;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 

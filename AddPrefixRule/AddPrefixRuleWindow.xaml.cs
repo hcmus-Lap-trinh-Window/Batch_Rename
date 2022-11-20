@@ -28,6 +28,7 @@ namespace RuleWindow
 
         private void LoadingFirstly(object sender, RoutedEventArgs e)
         {
+            this.DataContext = this._AddPrefixRule;
         }
 
         private void prefixInput_TextChanged(object sender, TextChangedEventArgs e)

@@ -1,7 +1,10 @@
-﻿using RuleWindow;
+﻿using CommonModel.Model;
+using RuleWindow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace CommonModel
@@ -12,6 +15,7 @@ namespace CommonModel
         public bool IsInUse { get; set; }
         public string ReplaceCharacter { get; set; }    
         public string IntoCharacter { get; set; }
+        [JsonIgnore]
         public ReplaceSpecialCharacterWindow ConfigurationUI { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -94,6 +98,29 @@ namespace CommonModel
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public IRule Clone(RuleJson ruleJson)
+        {
+            ReplaceSpecialCharacterRule instance = null;
+            try
+            {
+                instance = JsonSerializer.Deserialize<ReplaceSpecialCharacterRule>(ruleJson.Json);
+                if (instance != null)
+                {
+                    instance.ConfigurationUI = new ReplaceSpecialCharacterWindow(ref instance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return instance;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }

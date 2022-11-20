@@ -1,6 +1,7 @@
 ﻿using CommonModel;
 using CommonModel.Model;
 using Config;
+using HandyControl.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
@@ -13,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +34,7 @@ namespace Batch_Rename_App
         private readonly RuleFactory _RuleFactory;
         private readonly RuleConfig _RuleConfig;
         public ObservableCollection<IRule> _RuleList { get; private set; }
+        public ObservableCollection<string> _PresetComboBox { get; private set; }
         public BindingList<MyFile> FileList = new BindingList<MyFile>();
         public BindingList<MyFolder> FolderList = new BindingList<MyFolder>();
 
@@ -54,6 +57,9 @@ namespace Batch_Rename_App
             
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
             RuleList.ItemsSource = this._RuleList;
+
+            _PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).ToList());
+            PresetComboBox.ItemsSource = this._PresetComboBox;
 
             // Set status file and folder to 0
             NumberOfFiles.DataContext = 0;
@@ -92,7 +98,31 @@ namespace Batch_Rename_App
 
         private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            try
+            {
+                var presetSelected = PresetComboBox.SelectedValue;
+                var presetFileName = presetNameInput.Text + ".json";
+                var presetDirectory = Directory.GetCurrentDirectory() + $"\\Preset\\{presetSelected}.json";
+                var presetContent = File.ReadAllText(presetDirectory);
+                var jsonToPreset = JsonSerializer.Deserialize<List<RuleJson>>(presetContent);
+                if (jsonToPreset != null && jsonToPreset.Count > 0)
+                {
+                    _RuleList = new ObservableCollection<IRule>();
+                    foreach (var jsonRule in jsonToPreset)
+                    {
+                        var rule = _RuleFactory.CreateRuleInstance(jsonRule);
+                        if (rule != null)
+                        {
+                            _RuleList.Add(rule);
+                        }
+                    }
+                }
+                RuleList.ItemsSource = _RuleList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
         }
 
         private void Clear_All_Preset_Button_Click(object sender, RoutedEventArgs e)
@@ -116,6 +146,33 @@ namespace Batch_Rename_App
         {
             try
             {
+                if (!presetNameInput.Text.IsNullOrWhiteSpace())
+                {
+                    if (_RuleList != null && _RuleList.Count > 0)
+                    {
+                        var presetFileName = presetNameInput.Text + ".json";
+                        var presetDirectory = Directory.GetCurrentDirectory() + "\\Preset\\";
+                        var presetToJsonList = new List<RuleJson>();
+                        foreach (var r in _RuleList)
+                        {
+                            presetToJsonList.Add(new RuleJson()
+                            {
+                                Name = r.Name,
+                                Json = r.ToJson()
+                            });
+                        }
+                        var presetToJson = JsonSerializer.Serialize(presetToJsonList);
+                        SavePreset(presetDirectory + presetFileName, presetToJson);
+                        if (!_PresetComboBox.Contains(presetNameInput.Text))
+                        {
+                            _PresetComboBox.Add(presetNameInput.Text);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Input Preset Name First!");
+                }
 
             }
             catch (Exception ex)
@@ -123,7 +180,54 @@ namespace Batch_Rename_App
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
         }
-
+        private void SavePreset(string filePath, string data)
+        {
+            var listFile = GetAllJsonFile("Preset");
+            var fileName = System.IO.Path.GetFileName(filePath);
+            if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase))
+            {
+                File.WriteAllText(filePath, data);
+            }
+            else
+            {
+                MessageBoxResult action = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
+                {
+                    Message = "File existed, do you want to override it?",
+                    Caption = "Save preset",
+                    Button = MessageBoxButton.YesNo,
+                });
+                if (action == MessageBoxResult.Yes)
+                {
+                    File.WriteAllText(filePath, data);
+                }
+            }
+        }
+        /// <summary>
+        /// Lấy tất cả các file .json có trong FolderName có đường dẫn BatchRename/Batch_Rename/BIN/
+        /// </summary>
+        /// <param name="FolderName"></param>
+        /// <returns></returns>
+        private List<string> GetAllJsonFile(string FolderName)
+        {
+            List<string> result = new List<string>();
+            try
+            {
+                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + FolderName);
+                FileInfo[] fi = di.GetFiles("*.json");
+                if (fi != null && fi.Length > 0)
+                {
+                    foreach (var file in fi)
+                    {
+                        result.Add(file.Name);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return result;
+        }
         private void RuleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 

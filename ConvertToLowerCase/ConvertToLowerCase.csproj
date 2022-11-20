@@ -12,6 +12,10 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="PropertyChanged.Fody" Version="4.0.3" />
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CommonModel\CommonModel.csproj" />

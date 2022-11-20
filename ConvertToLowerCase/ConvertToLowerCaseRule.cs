@@ -1,8 +1,11 @@
+using CommonModel.Model;
 using RuleWindow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace CommonModel
@@ -14,6 +17,7 @@ namespace CommonModel
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        [JsonIgnore]
         public ConvertToLowerCaseRuleWindow ConfigurationUI { get; set; }
 
         public ConvertToLowerCaseRule()
@@ -65,6 +69,29 @@ namespace CommonModel
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public IRule Clone(RuleJson ruleJson)
+        {
+            ConvertToLowerCaseRule instance = null;
+            try
+            {
+                instance = JsonSerializer.Deserialize<ConvertToLowerCaseRule>(ruleJson.Json);
+                if (instance != null)
+                {
+                    instance.ConfigurationUI = new ConvertToLowerCaseRuleWindow(ref instance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return instance;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }
