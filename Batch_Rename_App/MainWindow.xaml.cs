@@ -93,7 +93,107 @@ namespace Batch_Rename_App
 
         private void StartBatching_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
+
+
+        /// <author>Nguyen Tuan Khanh</author>
+        /// <summary>
+        /// ApplyRuleToFiles: Apply tát cả rule vào danh sách các file.
+        /// </summary>
+        private void ApplyRulesToFiles()
+        {
+            try
+            {
+                if (this._RuleList == null || this._RuleList.Count < 1)
+                {
+                    RestoreFilesName();
+                    return;
+                }
+                var inUseRuleList = this._RuleList.Where(rule => rule.IsInUse).ToList(); // get tất cả các rule ở trạng thái in use.
+                if (inUseRuleList.Count < 1)
+                {
+                    RestoreFilesName();
+                    return;
+                }
+                if (this.FileList == null || this.FileList.Count < 1)
+                {
+                    return;
+                }
+                var count = this.FileList.Count;
+                var fileNameList = this.FileList.Select(file => file.FileName).ToList();
+                foreach (var rule in inUseRuleList)
+                {
+                    var tempList = rule.Apply(fileNameList, null);
+                    fileNameList.Clear();
+                    fileNameList.AddRange(tempList);
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    this.FileList[i].NewFileName = fileNameList[i];
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <author>Nguyen Tuan Khanh</author>
+        /// <summary>
+        /// ApplyRuleToFolders: Apply tất cả rules vào danh sách các file.
+        /// </summary>
+        private void ApplyRuleToFolders()
+        {
+            try
+            {
+                if (this._RuleList == null || this._RuleList.Count < 1)
+                {
+                    return;
+                }
+                var inUseRuleList = this._RuleList.Where(rule => rule.IsInUse).ToList();
+                if (inUseRuleList.Count < 1)
+                {
+                    return;
+                }
+                if (this.FolderList == null || this.FolderList.Count < 1)
+                {
+                    return;
+                }
+                var count = this.FolderList.Count;
+                var folderNameList = this.FolderList.Select(folder => folder.FolderName).ToList();
+                foreach (var rule in inUseRuleList)
+                {
+                    var tempList = rule.Apply(folderNameList, null);
+                    folderNameList.Clear();
+                    folderNameList.AddRange(tempList);
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    this.FileList[i].NewFileName = folderNameList[i];
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void RestoreFilesName()
+        {
+            foreach(var file in this.FileList)
+            {
+                file.NewFileName = file.FileName;
+            }
         }
 
         private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -235,12 +335,12 @@ namespace Batch_Rename_App
 
         private void Use_Rule_Checkbox_Checked(object sender, RoutedEventArgs e)
         {
-
+            ApplyRulesToFiles();
         }
 
         private void Use_Rule_Checkbox_Unchecked(object sender, RoutedEventArgs e)
         {
-
+            ApplyRulesToFiles();
         }
 
         private void Remove_Rule_Button_Click(object sender, RoutedEventArgs e)
@@ -278,7 +378,7 @@ namespace Batch_Rename_App
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
 
-            if(openFileDialog.ShowDialog() == true)
+            if (openFileDialog.ShowDialog() == true)
             {
                 foreach (string item in openFileDialog.FileNames)
                 {
@@ -291,10 +391,11 @@ namespace Batch_Rename_App
         {
             if (!isFileExist(fileNamePath))
             {
-                if(File.Exists(fileNamePath))
+                if (File.Exists(fileNamePath))
                 {
                     MyFile newFile = new MyFile(fileNamePath);
                     FileList.Add(newFile);
+                    ApplyRulesToFiles();
                 }
             }
             update_Filepage();
@@ -328,10 +429,10 @@ namespace Batch_Rename_App
         {
             foreach (MyFile item in FileList)
             {
-                if(item.FilePath.Equals(fileNamePath))
+                if (item.FilePath.Equals(fileNamePath))
                 {
                     return true;
-                }                
+                }
             }
             return false;
         }
@@ -363,7 +464,7 @@ namespace Batch_Rename_App
                     addFolder(item);
                 }
             }
-                
+
         }
 
         private void addFolder(string folderNamePath)
@@ -404,7 +505,7 @@ namespace Batch_Rename_App
         {
             foreach (MyFolder item in FolderList)
             {
-                if(item.FolderPath.Equals(folderNamePath))
+                if (item.FolderPath.Equals(folderNamePath))
                 {
                     return true;
                 }
