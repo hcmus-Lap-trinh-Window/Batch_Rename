@@ -6,7 +6,8 @@
       "AddNumberCounterRule",
       "ChangeExtensionRule",
       "ConvertToLowerCase",
-      "ReplaceSpecialCharacterRule"
+      "ReplaceSpecialCharacterRule",
+      "TrimRule"
     ]
   }
 }

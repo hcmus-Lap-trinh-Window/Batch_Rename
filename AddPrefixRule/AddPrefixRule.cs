@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Controls;
 
 namespace CommonModel
 {
@@ -20,14 +21,15 @@ namespace CommonModel
         public bool IsInUse { get; set; }
         public string Prefix { get; set; }
         [JsonIgnore]
-        public AddPrefixRuleWindow ConfigurationUI { get; set; }
+        public UserControl ConfigurationUI { get; set; }
 
         public AddPrefixRule()
         {
             this.Name = "Add Prefix";
             Prefix = String.Empty;
-            var instance = this;
-            ConfigurationUI = new AddPrefixRuleWindow(ref instance);
+            //var instance = this;
+            //ConfigurationUI = new AddPrefixRuleWindow(ref instance);
+            ConfigurationUI = new AddPrefixRuleWindow(this);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -38,7 +40,8 @@ namespace CommonModel
             {
                 if(this.Prefix.IsNullOrWhiteSpace())
                 {
-                    throw new Exception($"Prefix value là null, rỗng hoặc khoảng trắng.");
+                    return originalValue;
+                    //throw new Exception($"Prefix value là null, rỗng hoặc khoảng trắng.");
                 }
                 var newValue = Prefix + originalValue;
                 return newValue;
@@ -84,7 +87,8 @@ namespace CommonModel
                 instance = JsonSerializer.Deserialize<AddPrefixRule>(ruleJson.Json);
                 if (instance != null)
                 {
-                    instance.ConfigurationUI = new AddPrefixRuleWindow(ref instance);
+                    //instance.ConfigurationUI = new AddPrefixRuleWindow(ref instance);
+                    instance.ConfigurationUI = new AddPrefixRuleWindow(this);
                 }
             }
             catch (Exception ex)
@@ -98,10 +102,5 @@ namespace CommonModel
         {
             return JsonSerializer.Serialize(this);
         }
-    }
-
-    public class AddPrefixRuleData
-    {
-        public string Prefix { get; set; }
     }
 }

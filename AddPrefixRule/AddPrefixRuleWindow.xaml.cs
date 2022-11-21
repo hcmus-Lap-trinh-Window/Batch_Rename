@@ -19,7 +19,7 @@ namespace RuleWindow
 {
     public partial class AddPrefixRuleWindow : UserControl
     {
-        private AddPrefixRule _AddPrefixRule;
+        AddPrefixRule _AddPrefixRule;
         public AddPrefixRuleWindow(ref AddPrefixRule addPrefixRule)
         {
             this._AddPrefixRule = addPrefixRule;

@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddSuffixRule", "AddSuffixR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testapp", "testapp\testapp.csproj", "{877B105A-23D9-4EC6-AC3B-542178463C80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplaceSpecialCharacterRule", "ReplaceSpecialCharacterRule\ReplaceSpecialCharacterRule.csproj", "{FE0EF3D5-2476-4FD4-9251-30BD8B904E83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReplaceSpecialCharacterRule", "ReplaceSpecialCharacterRule\ReplaceSpecialCharacterRule.csproj", "{FE0EF3D5-2476-4FD4-9251-30BD8B904E83}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrimRule", "TrimRule\TrimRule.csproj", "{37BF1B42-0F88-4017-8E57-790A9A20ECEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{FE0EF3D5-2476-4FD4-9251-30BD8B904E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE0EF3D5-2476-4FD4-9251-30BD8B904E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE0EF3D5-2476-4FD4-9251-30BD8B904E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37BF1B42-0F88-4017-8E57-790A9A20ECEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37BF1B42-0F88-4017-8E57-790A9A20ECEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37BF1B42-0F88-4017-8E57-790A9A20ECEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37BF1B42-0F88-4017-8E57-790A9A20ECEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
