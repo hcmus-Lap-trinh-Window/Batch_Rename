@@ -7,7 +7,8 @@
       "ChangeExtensionRule",
       "ConvertToLowerCase",
       "ReplaceSpecialCharacterRule",
-      "TrimRule"
+      "TrimRule",
+      "ConvertToPascalCase"
     ]
   }
 }

@@ -20,7 +20,8 @@ namespace RuleWindow
     public partial class AddPrefixRuleWindow : UserControl
     {
         AddPrefixRule _AddPrefixRule;
-        public AddPrefixRuleWindow(ref AddPrefixRule addPrefixRule)
+        //public AddPrefixRuleWindow(ref AddPrefixRule addPrefixRule)
+        public AddPrefixRuleWindow(AddPrefixRule addPrefixRule)
         {
             this._AddPrefixRule = addPrefixRule;
             InitializeComponent();
@@ -28,7 +29,7 @@ namespace RuleWindow
 
         private void LoadingFirstly(object sender, RoutedEventArgs e)
         {
-            this.DataContext = this._AddPrefixRule;
+            //this.DataContext = this._AddPrefixRule;
         }
 
         private void prefixInput_TextChanged(object sender, TextChangedEventArgs e)
