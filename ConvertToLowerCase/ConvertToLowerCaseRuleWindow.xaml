@@ -1,18 +1,17 @@
-﻿<UserControl x:Class="RuleWindow.ChangeExtensionRuleWindow"
+﻿<UserControl x:Class="RuleWindow.ConvertToLowerCaseRuleWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RuleWindow"
              mc:Ignorable="d" 
+             Background="White"
              HorizontalContentAlignment="Stretch"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="White"
              Loaded="UserControl_Loaded">
     <StackPanel Margin="10">
-        <TextBlock HorizontalAlignment="left" FontWeight="Bold">Enter new extension (without dot):</TextBlock>
-        <TextBox HorizontalAlignment="Stretch" x:Name="extensionInput" TextChanged="extensionInput_TextChanged" Text="{Binding Extension}"></TextBox>
+        <TextBlock FontWeight="Bold" TextWrapping="Wrap">
+            Convert To Lowercase And Remove Space.
+        </TextBlock>
     </StackPanel>
-
 </UserControl>

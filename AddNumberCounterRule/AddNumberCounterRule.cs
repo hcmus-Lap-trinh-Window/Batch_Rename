@@ -1,8 +1,11 @@
 using CommonModel;
+using CommonModel.Model;
 using RuleWindow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CommonModel
 {
@@ -12,6 +15,7 @@ namespace CommonModel
         public int Start { get;set; }
         public int Step { get; set; }
         public int NumOfDigits { get; set; }
+        [JsonIgnore]
         public AddNumberCounterRuleWindow ConfigurationUI { get; set; }
         public bool IsInUse { get; set; }
 
@@ -37,10 +41,6 @@ namespace CommonModel
             List<string> result = new List<string>();
             try
             {
-                if (parameters == null)
-                {
-                    throw new Exception("AddNumberCounterRule failed. Parameters cannot be null");
-                }
                 if (orginStringList != null && orginStringList.Count > 0)
                 {
                     int indexOfFile = 0;
@@ -89,6 +89,29 @@ namespace CommonModel
                 result = currentCounter.ToString().PadLeft(numofDigits, '0');
             }
             return result;
+        }
+
+        public IRule Clone(RuleJson ruleJson)
+        {
+            AddNumberCounterRule instance = null;
+            try
+            {
+                instance = JsonSerializer.Deserialize<AddNumberCounterRule>(ruleJson.Json);
+                if (instance != null)
+                {
+                    instance.ConfigurationUI = new AddNumberCounterRuleWindow(ref instance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return instance;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }

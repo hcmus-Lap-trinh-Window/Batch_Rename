@@ -1,4 +1,5 @@
-﻿using Config;
+﻿using CommonModel.Model;
+using Config;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,20 @@ namespace CommonModel
             {
                 throw;
             }
+        }
+
+        public IRule CreateRuleInstance(RuleJson ruleJson)
+        {
+            IRule result = null;
+            try
+            {
+                result = (IRule)_Prototypes[ruleJson.Name].Clone(ruleJson);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return result;
         }
 
         #region Static Methods

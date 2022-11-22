@@ -23,7 +23,7 @@ namespace RuleWindow
     /// </summary>
     public partial class AddNumberCounterRuleWindow : UserControl
     {
-        AddNumberCounterRule rule;
+        private AddNumberCounterRule rule;
         public AddNumberCounterRuleWindow(ref AddNumberCounterRule rule)
         {
             this.rule = rule;

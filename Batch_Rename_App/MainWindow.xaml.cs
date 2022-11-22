@@ -1,6 +1,7 @@
-﻿using Batch_Rename_App.Models;
-using CommonModel;
+﻿using CommonModel;
+using CommonModel.Model;
 using Config;
+using HandyControl.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
@@ -13,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,11 +34,12 @@ namespace Batch_Rename_App
         private readonly RuleFactory _RuleFactory;
         private readonly RuleConfig _RuleConfig;
         public ObservableCollection<IRule> _RuleList { get; private set; }
+        public ObservableCollection<string> _PresetComboBox { get; private set; }
         public BindingList<MyFile> FileList = new BindingList<MyFile>();
         public BindingList<MyFolder> FolderList = new BindingList<MyFolder>();
 
 
-        private readonly int itemPerPage = 2;
+        private readonly int itemPerPage = 5;
         private int currentFilePage = 1;
         private int currentFolderPage = 1;
 
@@ -54,6 +57,9 @@ namespace Batch_Rename_App
             
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
             RuleList.ItemsSource = this._RuleList;
+
+            _PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).ToList());
+            PresetComboBox.ItemsSource = this._PresetComboBox;
 
             // Set status file and folder to 0
             NumberOfFiles.DataContext = 0;
@@ -87,12 +93,136 @@ namespace Batch_Rename_App
 
         private void StartBatching_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
+
+
+        /// <author>Nguyen Tuan Khanh</author>
+        /// <summary>
+        /// ApplyRuleToFiles: Apply tát cả rule vào danh sách các file.
+        /// </summary>
+        private void ApplyRulesToFiles()
+        {
+            try
+            {
+                if (this._RuleList == null || this._RuleList.Count < 1)
+                {
+                    RestoreFilesName();
+                    return;
+                }
+                var inUseRuleList = this._RuleList.Where(rule => rule.IsInUse).ToList(); // get tất cả các rule ở trạng thái in use.
+                if (inUseRuleList.Count < 1)
+                {
+                    RestoreFilesName();
+                    return;
+                }
+                if (this.FileList == null || this.FileList.Count < 1)
+                {
+                    return;
+                }
+                var count = this.FileList.Count;
+                var fileNameList = this.FileList.Select(file => file.FileName).ToList();
+                foreach (var rule in inUseRuleList)
+                {
+                    var tempList = rule.Apply(fileNameList, null);
+                    fileNameList.Clear();
+                    fileNameList.AddRange(tempList);
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    this.FileList[i].NewFileName = fileNameList[i];
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <author>Nguyen Tuan Khanh</author>
+        /// <summary>
+        /// ApplyRuleToFolders: Apply tất cả rules vào danh sách các file.
+        /// </summary>
+        private void ApplyRuleToFolders()
+        {
+            try
+            {
+                if (this._RuleList == null || this._RuleList.Count < 1)
+                {
+                    return;
+                }
+                var inUseRuleList = this._RuleList.Where(rule => rule.IsInUse).ToList();
+                if (inUseRuleList.Count < 1)
+                {
+                    return;
+                }
+                if (this.FolderList == null || this.FolderList.Count < 1)
+                {
+                    return;
+                }
+                var count = this.FolderList.Count;
+                var folderNameList = this.FolderList.Select(folder => folder.FolderName).ToList();
+                foreach (var rule in inUseRuleList)
+                {
+                    var tempList = rule.Apply(folderNameList, null);
+                    folderNameList.Clear();
+                    folderNameList.AddRange(tempList);
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    this.FileList[i].NewFileName = folderNameList[i];
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void RestoreFilesName()
+        {
+            foreach(var file in this.FileList)
+            {
+                file.NewFileName = file.FileName;
+            }
         }
 
         private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            try
+            {
+                var presetSelected = PresetComboBox.SelectedValue;
+                var presetFileName = presetNameInput.Text + ".json";
+                var presetDirectory = Directory.GetCurrentDirectory() + $"\\Preset\\{presetSelected}.json";
+                var presetContent = File.ReadAllText(presetDirectory);
+                var jsonToPreset = JsonSerializer.Deserialize<List<RuleJson>>(presetContent);
+                if (jsonToPreset != null && jsonToPreset.Count > 0)
+                {
+                    _RuleList = new ObservableCollection<IRule>();
+                    foreach (var jsonRule in jsonToPreset)
+                    {
+                        var rule = _RuleFactory.CreateRuleInstance(jsonRule);
+                        if (rule != null)
+                        {
+                            _RuleList.Add(rule);
+                        }
+                    }
+                }
+                RuleList.ItemsSource = _RuleList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
         }
 
         private void Clear_All_Preset_Button_Click(object sender, RoutedEventArgs e)
@@ -114,9 +244,90 @@ namespace Batch_Rename_App
 
         private void SaveRule_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (!presetNameInput.Text.IsNullOrWhiteSpace())
+                {
+                    if (_RuleList != null && _RuleList.Count > 0)
+                    {
+                        var presetFileName = presetNameInput.Text + ".json";
+                        var presetDirectory = Directory.GetCurrentDirectory() + "\\Preset\\";
+                        var presetToJsonList = new List<RuleJson>();
+                        foreach (var r in _RuleList)
+                        {
+                            presetToJsonList.Add(new RuleJson()
+                            {
+                                Name = r.Name,
+                                Json = r.ToJson()
+                            });
+                        }
+                        var presetToJson = JsonSerializer.Serialize(presetToJsonList);
+                        SavePreset(presetDirectory + presetFileName, presetToJson);
+                        if (!_PresetComboBox.Contains(presetNameInput.Text))
+                        {
+                            _PresetComboBox.Add(presetNameInput.Text);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Input Preset Name First!");
+                }
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
         }
-
+        private void SavePreset(string filePath, string data)
+        {
+            var listFile = GetAllJsonFile("Preset");
+            var fileName = System.IO.Path.GetFileName(filePath);
+            if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase))
+            {
+                File.WriteAllText(filePath, data);
+            }
+            else
+            {
+                MessageBoxResult action = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
+                {
+                    Message = "File existed, do you want to override it?",
+                    Caption = "Save preset",
+                    Button = MessageBoxButton.YesNo,
+                });
+                if (action == MessageBoxResult.Yes)
+                {
+                    File.WriteAllText(filePath, data);
+                }
+            }
+        }
+        /// <summary>
+        /// Lấy tất cả các file .json có trong FolderName có đường dẫn BatchRename/Batch_Rename/BIN/
+        /// </summary>
+        /// <param name="FolderName"></param>
+        /// <returns></returns>
+        private List<string> GetAllJsonFile(string FolderName)
+        {
+            List<string> result = new List<string>();
+            try
+            {
+                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + FolderName);
+                FileInfo[] fi = di.GetFiles("*.json");
+                if (fi != null && fi.Length > 0)
+                {
+                    foreach (var file in fi)
+                    {
+                        result.Add(file.Name);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return result;
+        }
         private void RuleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -124,12 +335,12 @@ namespace Batch_Rename_App
 
         private void Use_Rule_Checkbox_Checked(object sender, RoutedEventArgs e)
         {
-
+            ApplyRulesToFiles();
         }
 
         private void Use_Rule_Checkbox_Unchecked(object sender, RoutedEventArgs e)
         {
-
+            ApplyRulesToFiles();
         }
 
         private void Remove_Rule_Button_Click(object sender, RoutedEventArgs e)
@@ -165,10 +376,14 @@ namespace Batch_Rename_App
         private void AddBatchingFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
 
-            if(openFileDialog.ShowDialog() == true)
+            if (openFileDialog.ShowDialog() == true)
             {
-                addFileToListView(openFileDialog.FileName);
+                foreach (string item in openFileDialog.FileNames)
+                {
+                    addFileToListView(item);
+                }
             }
         }
 
@@ -176,8 +391,12 @@ namespace Batch_Rename_App
         {
             if (!isFileExist(fileNamePath))
             {
-                MyFile newFile = new MyFile(fileNamePath);
-                FileList.Add(newFile);
+                if (File.Exists(fileNamePath))
+                {
+                    MyFile newFile = new MyFile(fileNamePath);
+                    FileList.Add(newFile);
+                    ApplyRulesToFiles();
+                }
             }
             update_Filepage();
         }
@@ -210,10 +429,10 @@ namespace Batch_Rename_App
         {
             foreach (MyFile item in FileList)
             {
-                if(item.FilePath.Equals(fileNamePath))
+                if (item.FilePath.Equals(fileNamePath))
                 {
                     return true;
-                }                
+                }
             }
             return false;
         }
@@ -237,8 +456,15 @@ namespace Batch_Rename_App
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
+            dialog.Multiselect = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                addFolder(dialog.FileName);
+            {
+                foreach (string item in dialog.FileNames)
+                {
+                    addFolder(item);
+                }
+            }
+
         }
 
         private void addFolder(string folderNamePath)
@@ -279,7 +505,7 @@ namespace Batch_Rename_App
         {
             foreach (MyFolder item in FolderList)
             {
-                if(item.FolderPath.Equals(folderNamePath))
+                if (item.FolderPath.Equals(folderNamePath))
                 {
                     return true;
                 }

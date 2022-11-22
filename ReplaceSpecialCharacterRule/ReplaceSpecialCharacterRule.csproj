@@ -4,7 +4,6 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	  <Version>1.0.0.0</Version>
   </PropertyGroup>
 
 	<PropertyGroup>
@@ -15,11 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="PropertyChanged.Fody" Version="4.0.3" />
+		<ProjectReference Include="..\CommonModel\CommonModel.csproj" />
 	</ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CommonModel\CommonModel.csproj" />
-  </ItemGroup>
 
 </Project>
