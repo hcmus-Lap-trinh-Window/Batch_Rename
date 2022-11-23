@@ -322,7 +322,11 @@ namespace Batch_Rename_App
                     }
                 }
             }
-            catch (Exception ex)
+            catch (DirectoryNotFoundException ex)
+            {
+                System.IO.Directory.CreateDirectory(Directory.GetCurrentDirectory() + $"\\{FolderName}");
+            }
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
