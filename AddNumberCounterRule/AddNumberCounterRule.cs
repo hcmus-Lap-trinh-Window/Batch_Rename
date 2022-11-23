@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Controls;
 
 namespace CommonModel
 {
@@ -16,7 +17,7 @@ namespace CommonModel
         public int Step { get; set; }
         public int NumOfDigits { get; set; }
         [JsonIgnore]
-        public AddNumberCounterRuleWindow ConfigurationUI { get; set; }
+        public UserControl ConfigurationUI { get; set; }
         public bool IsInUse { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -27,8 +28,7 @@ namespace CommonModel
             Step = 1;
             Start = 1;
             NumOfDigits = 0;
-            var instance = this;
-            ConfigurationUI = new AddNumberCounterRuleWindow(ref instance);
+            ConfigurationUI = new AddNumberCounterRuleWindow(this);
         }
 
         public string Apply(string originString, object parameters)
@@ -99,7 +99,7 @@ namespace CommonModel
                 instance = JsonSerializer.Deserialize<AddNumberCounterRule>(ruleJson.Json);
                 if (instance != null)
                 {
-                    instance.ConfigurationUI = new AddNumberCounterRuleWindow(ref instance);
+                    instance.ConfigurationUI = new AddNumberCounterRuleWindow(instance);
                 }
             }
             catch (Exception ex)

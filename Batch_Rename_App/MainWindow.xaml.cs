@@ -58,7 +58,7 @@ namespace Batch_Rename_App
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
             RuleList.ItemsSource = this._RuleList;
 
-            _PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).ToList());
+            _PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).OrderBy(c=>c).ToList());
             PresetComboBox.ItemsSource = this._PresetComboBox;
 
             // Set status file and folder to 0
@@ -201,6 +201,10 @@ namespace Batch_Rename_App
             try
             {
                 var presetSelected = PresetComboBox.SelectedValue;
+                if (presetSelected == null)
+                {
+                    return;
+                }
                 var presetFileName = presetNameInput.Text + ".json";
                 var presetDirectory = Directory.GetCurrentDirectory() + $"\\Preset\\{presetSelected}.json";
                 var presetContent = File.ReadAllText(presetDirectory);
@@ -218,6 +222,7 @@ namespace Batch_Rename_App
                     }
                 }
                 RuleList.ItemsSource = _RuleList;
+                presetNameInput.Text = presetSelected.ToString();
             }
             catch (Exception ex)
             {
@@ -227,7 +232,9 @@ namespace Batch_Rename_App
 
         private void Clear_All_Preset_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            presetNameInput.Text = string.Empty;
+            _RuleList.Clear();
+            PresetComboBox.SelectedIndex = -1;
         }
 
         private void RuleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

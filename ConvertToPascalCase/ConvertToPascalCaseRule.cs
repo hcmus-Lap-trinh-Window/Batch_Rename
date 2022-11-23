@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
@@ -77,7 +78,20 @@ namespace CommonModel
 
         public IRule Clone(RuleJson ruleJson)
         {
-            throw new NotImplementedException();
+            ConvertToPascalCaseRule instance = null;
+            try
+            {
+                instance = JsonSerializer.Deserialize<ConvertToPascalCaseRule>(ruleJson.Json);
+                if (instance != null)
+                {
+                    instance.ConfigurationUI = new ConvertToPascalCaseRuleWindow(instance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return instance;
         }
 
         public object Clone()
@@ -87,7 +101,7 @@ namespace CommonModel
 
         public string ToJson()
         {
-            throw new NotImplementedException();
+            return JsonSerializer.Serialize(this);
         }
     }
 }
