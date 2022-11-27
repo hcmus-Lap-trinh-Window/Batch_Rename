@@ -42,8 +42,8 @@ namespace Batch_Rename_App
 
 
         private readonly int itemPerPage = 5;
-        private int currentFilePage = 1;
-        private int currentFolderPage = 1;
+        private int currentFilePage { get; set; } = 1;
+        private int currentFolderPage { get; set; } = 1;
 
 
         public MainWindow(IOptionsSnapshot<RuleConfig> ruleConfig)
@@ -78,7 +78,9 @@ namespace Batch_Rename_App
                             }
                             // set current file page and folder page
                             this.currentFilePage = projectStatus.currentFilePage;
+                            FilePagination.PageIndex = projectStatus.currentFilePage;
                             this.currentFolderPage = projectStatus.currentFolderPage;
+                            FolderPagination.PageIndex = projectStatus.currentFolderPage;
                             // set project resolution
                             this.Height = projectStatus.Height;
                             this.Width = projectStatus.Width;
@@ -93,10 +95,10 @@ namespace Batch_Rename_App
                             // set text for preset name input
                             this.presetNameInput.Text = projectStatus.Preset;
                             // set file
-                            this.FileList = projectStatus.FileList;
+                            this.FileList = projectStatus.FileList;                                                       
                             update_Filepage();
                             // set folder
-                            this.FolderList = projectStatus.FolderList;
+                            this.FolderList = projectStatus.FolderList;                         
                             update_Folderpage();
 
                             
@@ -497,6 +499,14 @@ namespace Batch_Rename_App
                     MyFile newFile = new MyFile(fileNamePath);
                     FileList.Add(newFile);
                     ApplyRulesToFiles();
+                } else if (Directory.Exists(fileNamePath))              // thêm đệ quy khi đưa vào folder
+                {
+                    string[] InsideFilesList = Directory.GetFiles(fileNamePath, "*", SearchOption.AllDirectories);
+
+                    foreach (var item in InsideFilesList)
+                    {
+                        addFileToListView(item);
+                    }
                 }
             }
             update_Filepage();
@@ -545,12 +555,44 @@ namespace Batch_Rename_App
 
         private void FileList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            if (sender is ListViewItem)
+            {
+                ListViewItem? draggedItem = sender as ListViewItem;
+                DataObject data = new DataObject("FILE", draggedItem?.DataContext);
+                DragDrop.DoDragDrop(draggedItem, data, DragDropEffects.Move);
+                draggedItem.IsSelected = true;
+            }
         }
 
         private void FileList_Drop(object sender, DragEventArgs e)
         {
+            if (e.Data.GetDataPresent("FILE"))
+            {
+                MyFile? droppedData = e.Data.GetData("FILE") as MyFile;
+                MyFile? target = ((ListViewItem)(sender)).DataContext as MyFile;
 
+                int removedIdx = FileList.IndexOf(droppedData);
+                int targetIdx = FileList.IndexOf(target);
+                if (removedIdx < 0 || targetIdx < 0 || removedIdx > FileList.Count || targetIdx > FileList.Count)
+                {
+                    return;
+                }
+                else if (removedIdx < targetIdx)
+                {
+                    FileList.Insert(targetIdx + 1, droppedData);
+                    FileList.RemoveAt(removedIdx);
+                }
+                else
+                {
+                    int remIdx = removedIdx + 1;
+                    if (FileList.Count + 1 > remIdx)
+                    {
+                        FileList.Insert(targetIdx, droppedData);
+                        FileList.RemoveAt(remIdx);
+                    }
+                }
+            }
+            update_Filepage();
         }
 
         private void AddBatchingFolder_Click(object sender, RoutedEventArgs e)
@@ -562,18 +604,25 @@ namespace Batch_Rename_App
             {
                 foreach (string item in dialog.FileNames)
                 {
-                    addFolder(item);
+                    addFolderToListView(item);
                 }
             }
 
         }
 
-        private void addFolder(string folderNamePath)
+        private void addFolderToListView(string folderNamePath)
         {
             if (!isFolderExist(folderNamePath))
             {
-                MyFolder newfolder = new MyFolder(folderNamePath);
-                FolderList.Add(newfolder);
+                MyFolder newFolder = new MyFolder(folderNamePath);
+                FolderList.Add(newFolder);
+
+                string[] InsideFoldersList = Directory.GetDirectories(folderNamePath, "*", SearchOption.AllDirectories);
+
+                foreach (var item in InsideFoldersList)                     // thêm đệ quy
+                {
+                    addFolderToListView(item);
+                }             
             }
             update_Folderpage();
         }
@@ -638,12 +687,44 @@ namespace Batch_Rename_App
 
         private void FolderList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            if (sender is ListViewItem)
+            {
+                ListViewItem? draggedItem = sender as ListViewItem;
+                DataObject data = new DataObject("FOLDER", draggedItem.DataContext);
+                DragDrop.DoDragDrop(draggedItem, data, DragDropEffects.Move);
+                draggedItem.IsSelected = true;
+            }
         }
 
         private void FolderList_Drop(object sender, DragEventArgs e)
         {
+            if (e.Data.GetDataPresent("FOLDER"))
+            {
+                MyFolder? droppedData = e.Data.GetData("FOLDER") as MyFolder;
+                MyFolder? target = ((ListViewItem)(sender)).DataContext as MyFolder;
 
+                int removedIdx = FolderList.IndexOf(droppedData);
+                int targetIdx = FolderList.IndexOf(target);
+                if (removedIdx < 0 || targetIdx < 0 || removedIdx > FolderList.Count || targetIdx > FolderList.Count)
+                {
+                    return;
+                }
+                else if (removedIdx < targetIdx)
+                {
+                    FolderList.Insert(targetIdx + 1, droppedData);
+                    FolderList.RemoveAt(removedIdx);
+                }
+                else
+                {
+                    int remIdx = removedIdx + 1;
+                    if (FolderList.Count + 1 > remIdx)
+                    {
+                        FolderList.Insert(targetIdx, droppedData);
+                        FolderList.RemoveAt(remIdx);
+                    }
+                }
+            }
+            update_Folderpage();
         }
 
         private void DragOverFilePage(object sender, DragEventArgs e)
@@ -658,7 +739,14 @@ namespace Batch_Rename_App
 
         private void DropFileList(object sender, DragEventArgs e)
         {
-
+            string[]? droppedFilePaths = e.Data?.GetData(DataFormats.FileDrop, true) as string[];
+            if (droppedFilePaths != null)
+            {
+                foreach (string filePath in droppedFilePaths)
+                {
+                    addFileToListView(filePath);
+                }
+            }
         }
 
         private void page_FilePageUpdated(object sender, HandyControl.Data.FunctionEventArgs<int> e)
@@ -679,7 +767,15 @@ namespace Batch_Rename_App
 
         private void DropFolderList(object sender, DragEventArgs e)
         {
+            string[]? droppedFolderPaths = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+            if (droppedFolderPaths != null)
+            {
 
+                foreach (string folderPath in droppedFolderPaths)
+                {
+                    addFolderToListView(folderPath);
+                }
+            }
         }
 
         private void Auto_Save_Checked(object sender, RoutedEventArgs e)
