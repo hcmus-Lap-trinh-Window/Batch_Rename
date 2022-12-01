@@ -4,11 +4,13 @@ using RuleWindow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Controls;
 using System.Windows.Documents;
 
 namespace CommonModel
@@ -19,20 +21,34 @@ namespace CommonModel
         public string Extension { get; set; }
         public bool IsInUse { get; set; }
         [JsonIgnore]
-        public ChangeExtensionRuleWindow ConfigurationUI { get; set; }
+        public UserControl ConfigurationUI { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public ChangeExtensionRule()
         {
-            this.Name = "Change Extension";
-            this.Extension = "";
-            var instance = this;
-            this.ConfigurationUI = new ChangeExtensionRuleWindow(ref instance);
+            Name = "Change Extension";
+            Extension = "";
+            ConfigurationUI = new ChangeExtensionRuleWindow(this);
         }
 
         public string Apply(string originString, object parameters)
         {
-            throw new NotImplementedException();
+            var result = string.Empty;
+            try
+            {
+                if (originString.IsNullOrWhiteSpace())
+                {
+                    throw new Exception("ChangeExtension failed! File name cannot be null!");
+                }
+                result = $"{originString.getFileName()}.{this.Extension}"; 
+            
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return result;
+
         }
         public List<string> Apply(List<string> orginStringList, object parameters)
         {
@@ -47,11 +63,8 @@ namespace CommonModel
                 {
                     foreach (var origin in orginStringList)
                     {
-                        var outputFileName = origin.getFileName() + this.Extension.ToLower();
-                        if (outputFileName.FileWithExtensionValidation(this.Extension))
-                        {
-                            result.Add(outputFileName);
-                        }
+                        var newFileName = Apply(origin, parameters);
+                        result.Add(newFileName);
                     }
                 }
             }
@@ -91,7 +104,7 @@ namespace CommonModel
                 instance = JsonSerializer.Deserialize<ChangeExtensionRule>(ruleJson.Json);
                 if (instance != null)
                 {
-                    instance.ConfigurationUI = new ChangeExtensionRuleWindow(ref instance);
+                    instance.ConfigurationUI = new ChangeExtensionRuleWindow(instance);
                 }
             }
             catch (Exception ex)

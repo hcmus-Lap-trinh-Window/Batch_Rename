@@ -22,7 +22,7 @@ namespace RuleWindow
     public partial class ConvertToLowerCaseRuleWindow : UserControl
     {
         ConvertToLowerCaseRule rule;
-        public ConvertToLowerCaseRuleWindow(ref ConvertToLowerCaseRule rule)
+        public ConvertToLowerCaseRuleWindow(ConvertToLowerCaseRule rule)
         {
             this.rule = rule;
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace RuleWindow
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DataContext = rule;
+            //this.DataContext = rule;
         }
     }
 }

@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Icon="/Images/rename.png"
         Title="Batch Rename" MinHeight="650" MinWidth="1360" ResizeMode="CanResizeWithGrip"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
     <Window.Resources>
         <local:StatusColorConverter x:Key="StatusColorConverter" />
         <local:ImageExtensionConverter x:Key="ImageExtensionConverter" />
@@ -296,7 +297,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="150" Header="File Name" DisplayMemberBinding="{Binding FileName}"/>
                                     <GridViewColumn Width="150" Header="New File Name" DisplayMemberBinding="{Binding NewFileName}"/>
-                                    <GridViewColumn Width="110" Header="File Extendsion" DisplayMemberBinding="{Binding FileExtension}"/>
+                                    <GridViewColumn Width="110" Header="File Extension" DisplayMemberBinding="{Binding FileExtension}"/>
                                     <GridViewColumn Width="280" Header="File Path" DisplayMemberBinding="{Binding FilePath}"/>
                                     <GridViewColumn Width="250" Header="Status">
                                         <GridViewColumn.CellTemplate>
@@ -363,24 +364,8 @@
                             </DockPanel>
                         </DockPanel>
                         <ListView x:Name="folderList" Margin="5px" AllowDrop="True" DragOver="DragOverFolderList" Drop="DropFolderList" Background="#FFD7E4F2">
-                            <ListView.Resources>
-                                <ContextMenu x:Key="ItemContextMenu">
-                                    <MenuItem Header="Open In File Explorer" Click="openInFolderExplorer_Click">
-                                        <MenuItem.Icon>
-                                            <Image Source="Images/browser.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-
-                                    <MenuItem Header="Delete Path" Click="deleteFolderMenu_Click">
-                                        <MenuItem.Icon>
-                                            <Image Source="Images/clear.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </ListView.Resources>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource ListViewItemBaseStyle}" >
-                                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
                                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="FolderList_PreviewMouseLeftButtonDown"/>
                                     <EventSetter Event="Drop" Handler="FolderList_Drop"/>
                                 </Style>

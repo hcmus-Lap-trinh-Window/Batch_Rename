@@ -37,11 +37,13 @@ namespace Batch_Rename_App
         public ObservableCollection<string> _PresetComboBox { get; private set; }
         public BindingList<MyFile> FileList = new BindingList<MyFile>();
         public BindingList<MyFolder> FolderList = new BindingList<MyFolder>();
+        public ProjectStatus projectStatus = new ProjectStatus();
+        public bool FirstInit = true;
 
 
         private readonly int itemPerPage = 5;
-        private int currentFilePage = 1;
-        private int currentFolderPage = 1;
+        private int currentFilePage { get; set; } = 1;
+        private int currentFolderPage { get; set; } = 1;
 
 
         public MainWindow(IOptionsSnapshot<RuleConfig> ruleConfig)
@@ -50,15 +52,76 @@ namespace Batch_Rename_App
             this._RuleFactory = RuleFactory.GetInstance(ruleConfig);
             InitializeComponent();
         }
+        private bool initProjectFromPreviousStatus()
+        {
+            bool isInit = false;
+            try
+            {
+                var previousStatus = GetAllJsonFile("ProjectStatus").LastOrDefault();
+                if (previousStatus != null)
+                {
+                    var projectStatusDir = Directory.GetCurrentDirectory() + $"\\ProjectStatus\\{previousStatus}";
+                    var previousStatusJson = File.ReadAllText(projectStatusDir);
+                    if (previousStatusJson != null)
+                    {
+                        var projectStatus = JsonSerializer.Deserialize<ProjectStatus>(previousStatusJson);
+                        if (projectStatus != null)
+                        {
+                            _RuleList = new ObservableCollection<IRule>();
+                            if (projectStatus.RulesList != null)
+                            {
+                                foreach (var ruleJson in projectStatus.RulesList)
+                                {
+                                    var rule = _RuleFactory.CreateRuleInstance(ruleJson);
+                                    _RuleList.Add(rule);
+                                }
+                            }
+                            // set current file page and folder page
+                            this.currentFilePage = projectStatus.currentFilePage;
+                            FilePagination.PageIndex = projectStatus.currentFilePage;
+                            this.currentFolderPage = projectStatus.currentFolderPage;
+                            FolderPagination.PageIndex = projectStatus.currentFolderPage;
+                            // set project resolution
+                            this.Height = projectStatus.Height;
+                            this.Width = projectStatus.Width;
+                            // set rule combo box
+                            this.RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
+                            // set rule list
+                            this.RuleList.ItemsSource = _RuleList;
+                            // set text and item source for preset combo box
+                            this.PresetComboBox.SelectedItem = projectStatus.Preset;
+                            this._PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).OrderBy(c => c).ToList());
+                            this.PresetComboBox.ItemsSource = this._PresetComboBox;
+                            // set text for preset name input
+                            this.presetNameInput.Text = projectStatus.Preset;
+                            // set file
+                            this.FileList = projectStatus.FileList;                                                       
+                            update_Filepage();
+                            // set folder
+                            this.FolderList = projectStatus.FolderList;                         
+                            update_Folderpage();
+
+                            
+                            isInit = true; 
+                        }
+                    }
+                }    
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return isInit;
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this._RuleList = new ObservableCollection<IRule>();
-            
+
             RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
             RuleList.ItemsSource = this._RuleList;
 
-            _PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).ToList());
+            _PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).OrderBy(c => c).ToList());
             PresetComboBox.ItemsSource = this._PresetComboBox;
 
             // Set status file and folder to 0
@@ -66,9 +129,12 @@ namespace Batch_Rename_App
             NumberOfBatchingFiles.DataContext = 0;
             NumberOfErrorFiles.DataContext = 0;
 
-            NumberOfFolders.DataContext = 0;
-            NumberOfBatchingFolders.DataContext = 0;
-            NumberOfErrorFolders.DataContext = 0;
+            var canInit = initProjectFromPreviousStatus();
+            if (canInit)
+            {
+                FirstInit = false;
+                return;
+            }
         }
 
         private void New_Project_Button_Click(object sender, RoutedEventArgs e)
@@ -200,7 +266,15 @@ namespace Batch_Rename_App
         {
             try
             {
+                if (FirstInit)
+                {
+                    return;
+                }
                 var presetSelected = PresetComboBox.SelectedValue;
+                if (presetSelected == null)
+                {
+                    return;
+                }
                 var presetFileName = presetNameInput.Text + ".json";
                 var presetDirectory = Directory.GetCurrentDirectory() + $"\\Preset\\{presetSelected}.json";
                 var presetContent = File.ReadAllText(presetDirectory);
@@ -218,6 +292,7 @@ namespace Batch_Rename_App
                     }
                 }
                 RuleList.ItemsSource = _RuleList;
+                presetNameInput.Text = presetSelected.ToString();
             }
             catch (Exception ex)
             {
@@ -227,7 +302,9 @@ namespace Batch_Rename_App
 
         private void Clear_All_Preset_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            presetNameInput.Text = string.Empty;
+            _RuleList.Clear();
+            PresetComboBox.SelectedIndex = -1;
         }
 
         private void RuleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -262,7 +339,7 @@ namespace Batch_Rename_App
                             });
                         }
                         var presetToJson = JsonSerializer.Serialize(presetToJsonList);
-                        SavePreset(presetDirectory + presetFileName, presetToJson);
+                        SaveJson(presetDirectory + presetFileName, presetToJson);
                         if (!_PresetComboBox.Contains(presetNameInput.Text))
                         {
                             _PresetComboBox.Add(presetNameInput.Text);
@@ -280,30 +357,52 @@ namespace Batch_Rename_App
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
         }
-        private void SavePreset(string filePath, string data)
+        private void SaveJson(string filePath, string data)
         {
-            var listFile = GetAllJsonFile("Preset");
-            var fileName = System.IO.Path.GetFileName(filePath);
-            if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase))
+            try
             {
-                File.WriteAllText(filePath, data);
-            }
-            else
-            {
-                MessageBoxResult action = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
+                var folderName = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(filePath));
+                if (folderName == null)
                 {
-                    Message = "File existed, do you want to override it?",
-                    Caption = "Save preset",
-                    Button = MessageBoxButton.YesNo,
-                });
-                if (action == MessageBoxResult.Yes)
+                    throw new Exception("Folder name not existed");
+                }
+                var listFile = GetAllJsonFile(folderName);
+                var fileName = System.IO.Path.GetFileName(filePath);
+                if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase))
                 {
+                    //System.IO.Directory.CreateDirectory(@filePath);
                     File.WriteAllText(filePath, data);
                 }
+                else
+                {
+                    MessageBoxResult action = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
+                    {
+                        Message = "File existed, do you want to override it?",
+                        Caption = "Save preset",
+                        Button = MessageBoxButton.YesNo,
+                    });
+                    if (action == MessageBoxResult.Yes)
+                    {
+                        File.WriteAllText(filePath, data);
+                    }
+                }
             }
+            catch(DirectoryNotFoundException dnfe)
+            {
+                System.IO.Directory.CreateDirectory(filePath);
+            }
+            catch (IOException ioee)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            
         }
         /// <summary>
-        /// Lấy tất cả các file .json có trong FolderName có đường dẫn BatchRename/Batch_Rename/BIN/
+        /// Lấy tất cả các file .json có trong FolderName có đường dẫn BatchRename/Batch_Rename/BIN/FolderName
         /// </summary>
         /// <param name="FolderName"></param>
         /// <returns></returns>
@@ -312,7 +411,7 @@ namespace Batch_Rename_App
             List<string> result = new List<string>();
             try
             {
-                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + FolderName);
+                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + FolderName+"\\");
                 FileInfo[] fi = di.GetFiles("*.json");
                 if (fi != null && fi.Length > 0)
                 {
@@ -322,7 +421,11 @@ namespace Batch_Rename_App
                     }
                 }
             }
-            catch (Exception ex)
+            catch (DirectoryNotFoundException dnfe)
+            {
+                System.IO.Directory.CreateDirectory(Directory.GetCurrentDirectory() + $"\\{FolderName}\\");
+            }
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
@@ -396,6 +499,14 @@ namespace Batch_Rename_App
                     MyFile newFile = new MyFile(fileNamePath);
                     FileList.Add(newFile);
                     ApplyRulesToFiles();
+                } else if (Directory.Exists(fileNamePath))              // thêm đệ quy khi đưa vào folder
+                {
+                    string[] InsideFilesList = Directory.GetFiles(fileNamePath, "*", SearchOption.AllDirectories);
+
+                    foreach (var item in InsideFilesList)
+                    {
+                        addFileToListView(item);
+                    }
                 }
             }
             update_Filepage();
@@ -444,12 +555,44 @@ namespace Batch_Rename_App
 
         private void FileList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            if (sender is ListViewItem)
+            {
+                ListViewItem? draggedItem = sender as ListViewItem;
+                DataObject data = new DataObject("FILE", draggedItem?.DataContext);
+                DragDrop.DoDragDrop(draggedItem, data, DragDropEffects.Move);
+                draggedItem.IsSelected = true;
+            }
         }
 
         private void FileList_Drop(object sender, DragEventArgs e)
         {
+            if (e.Data.GetDataPresent("FILE"))
+            {
+                MyFile? droppedData = e.Data.GetData("FILE") as MyFile;
+                MyFile? target = ((ListViewItem)(sender)).DataContext as MyFile;
 
+                int removedIdx = FileList.IndexOf(droppedData);
+                int targetIdx = FileList.IndexOf(target);
+                if (removedIdx < 0 || targetIdx < 0 || removedIdx > FileList.Count || targetIdx > FileList.Count)
+                {
+                    return;
+                }
+                else if (removedIdx < targetIdx)
+                {
+                    FileList.Insert(targetIdx + 1, droppedData);
+                    FileList.RemoveAt(removedIdx);
+                }
+                else
+                {
+                    int remIdx = removedIdx + 1;
+                    if (FileList.Count + 1 > remIdx)
+                    {
+                        FileList.Insert(targetIdx, droppedData);
+                        FileList.RemoveAt(remIdx);
+                    }
+                }
+            }
+            update_Filepage();
         }
 
         private void AddBatchingFolder_Click(object sender, RoutedEventArgs e)
@@ -461,18 +604,25 @@ namespace Batch_Rename_App
             {
                 foreach (string item in dialog.FileNames)
                 {
-                    addFolder(item);
+                    addFolderToListView(item);
                 }
             }
 
         }
 
-        private void addFolder(string folderNamePath)
+        private void addFolderToListView(string folderNamePath)
         {
             if (!isFolderExist(folderNamePath))
             {
-                MyFolder newfolder = new MyFolder(folderNamePath);
-                FolderList.Add(newfolder);
+                MyFolder newFolder = new MyFolder(folderNamePath);
+                FolderList.Add(newFolder);
+
+                string[] InsideFoldersList = Directory.GetDirectories(folderNamePath, "*", SearchOption.AllDirectories);
+
+                foreach (var item in InsideFoldersList)                     // thêm đệ quy
+                {
+                    addFolderToListView(item);
+                }             
             }
             update_Folderpage();
         }
@@ -537,12 +687,44 @@ namespace Batch_Rename_App
 
         private void FolderList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            if (sender is ListViewItem)
+            {
+                ListViewItem? draggedItem = sender as ListViewItem;
+                DataObject data = new DataObject("FOLDER", draggedItem.DataContext);
+                DragDrop.DoDragDrop(draggedItem, data, DragDropEffects.Move);
+                draggedItem.IsSelected = true;
+            }
         }
 
         private void FolderList_Drop(object sender, DragEventArgs e)
         {
+            if (e.Data.GetDataPresent("FOLDER"))
+            {
+                MyFolder? droppedData = e.Data.GetData("FOLDER") as MyFolder;
+                MyFolder? target = ((ListViewItem)(sender)).DataContext as MyFolder;
 
+                int removedIdx = FolderList.IndexOf(droppedData);
+                int targetIdx = FolderList.IndexOf(target);
+                if (removedIdx < 0 || targetIdx < 0 || removedIdx > FolderList.Count || targetIdx > FolderList.Count)
+                {
+                    return;
+                }
+                else if (removedIdx < targetIdx)
+                {
+                    FolderList.Insert(targetIdx + 1, droppedData);
+                    FolderList.RemoveAt(removedIdx);
+                }
+                else
+                {
+                    int remIdx = removedIdx + 1;
+                    if (FolderList.Count + 1 > remIdx)
+                    {
+                        FolderList.Insert(targetIdx, droppedData);
+                        FolderList.RemoveAt(remIdx);
+                    }
+                }
+            }
+            update_Folderpage();
         }
 
         private void DragOverFilePage(object sender, DragEventArgs e)
@@ -557,7 +739,14 @@ namespace Batch_Rename_App
 
         private void DropFileList(object sender, DragEventArgs e)
         {
-
+            string[]? droppedFilePaths = e.Data?.GetData(DataFormats.FileDrop, true) as string[];
+            if (droppedFilePaths != null)
+            {
+                foreach (string filePath in droppedFilePaths)
+                {
+                    addFileToListView(filePath);
+                }
+            }
         }
 
         private void page_FilePageUpdated(object sender, HandyControl.Data.FunctionEventArgs<int> e)
@@ -578,7 +767,15 @@ namespace Batch_Rename_App
 
         private void DropFolderList(object sender, DragEventArgs e)
         {
+            string[]? droppedFolderPaths = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+            if (droppedFolderPaths != null)
+            {
 
+                foreach (string folderPath in droppedFolderPaths)
+                {
+                    addFolderToListView(folderPath);
+                }
+            }
         }
 
         private void Auto_Save_Checked(object sender, RoutedEventArgs e)
@@ -589,6 +786,41 @@ namespace Batch_Rename_App
         private void Auto_Save_UnChecked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                ProjectStatus projectStatus = new ProjectStatus();
+                projectStatus.Width = this.Width;
+                projectStatus.Height = this.Height;
+                projectStatus.currentFolderPage = this.currentFolderPage;
+                projectStatus.currentFilePage = this.currentFilePage;
+                projectStatus.FileList = this.FileList;
+                projectStatus.FolderList = this.FolderList;
+                projectStatus.RulesList = new List<RuleJson>();
+                projectStatus.Preset = PresetComboBox.SelectedValue != null ? PresetComboBox.SelectedValue.ToString() : string.Empty;
+                if (_RuleList!= null)
+                {
+                    foreach (var rule in _RuleList)
+                    {
+                        projectStatus.RulesList.Add(new RuleJson()
+                        {
+                            Name = rule.Name,
+                            Json = rule.ToJson()
+                        });
+                    }
+                }
+                
+                var projectStatusJson = JsonSerializer.Serialize(projectStatus);
+                var dateTime = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
+                var fileName = Directory.GetCurrentDirectory() + @$"\\ProjectStatus\\{dateTime}.json";
+                SaveJson(fileName, projectStatusJson);
+            }
+            catch (Exception ex) {
+                
+            }
         }
     }
 }

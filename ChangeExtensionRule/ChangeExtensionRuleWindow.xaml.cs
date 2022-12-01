@@ -22,7 +22,8 @@ namespace RuleWindow
     public partial class ChangeExtensionRuleWindow : UserControl
     {
         private ChangeExtensionRule rule;
-        public ChangeExtensionRuleWindow(ref ChangeExtensionRule rule)
+
+        public ChangeExtensionRuleWindow(ChangeExtensionRule rule)
         {
             this.rule = rule;
             InitializeComponent();
@@ -30,7 +31,7 @@ namespace RuleWindow
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DataContext = this.rule;
+            DataContext = this.rule;
         }
 
         private void extensionInput_TextChanged(object sender, TextChangedEventArgs e)

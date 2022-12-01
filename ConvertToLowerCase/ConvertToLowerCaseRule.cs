@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 
 namespace CommonModel
 {
@@ -18,14 +19,14 @@ namespace CommonModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         [JsonIgnore]
-        public ConvertToLowerCaseRuleWindow ConfigurationUI { get; set; }
+        public UserControl ConfigurationUI { get; set; }
 
         public ConvertToLowerCaseRule()
         {
             Name = "Convert To Lower Case and Trim WhiteSpace";
             IsInUse = false;
             var instance = this;
-            ConfigurationUI = new ConvertToLowerCaseRuleWindow(ref instance);
+            ConfigurationUI = new ConvertToLowerCaseRuleWindow(instance);
         }
 
         public string Apply(string originString, object parameters)
@@ -33,7 +34,7 @@ namespace CommonModel
             string result = string.Empty;
             try
             {
-                if (!originString.IsNullOrWhiteSpace())
+                if (originString.IsNullOrWhiteSpace())
                 {
                     throw new Exception("ConvertToLowerCase Failed. File name cannot be null!");
                 }
@@ -79,7 +80,7 @@ namespace CommonModel
                 instance = JsonSerializer.Deserialize<ConvertToLowerCaseRule>(ruleJson.Json);
                 if (instance != null)
                 {
-                    instance.ConfigurationUI = new ConvertToLowerCaseRuleWindow(ref instance);
+                    instance.ConfigurationUI = new ConvertToLowerCaseRuleWindow(instance);
                 }
             }
             catch (Exception ex)
