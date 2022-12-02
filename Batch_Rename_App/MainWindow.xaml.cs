@@ -489,12 +489,17 @@ namespace Batch_Rename_App
             {
                 foreach (string item in openFileDialog.FileNames)
                 {
-                    addFileToListView(item);
+                    addFileToListView(item, out bool checkFileExist);
+
+                    if(checkFileExist)
+                    {
+                        AddBatchingFile_Click(sender, e);
+                    }
                 }
             }
         }
 
-        private void addFileToListView(string fileNamePath)
+        private void addFileToListView(string fileNamePath, out bool checkFileExist)
         {
             if (!isFileExist(fileNamePath))
             {
@@ -509,11 +514,16 @@ namespace Batch_Rename_App
 
                     foreach (var item in InsideFilesList)
                     {
-                        addFileToListView(item);
+                        addFileToListView(item, out bool isChildFileExist);
+
+                        if(isChildFileExist) break;
                     }
                 }
+
+                checkFileExist = false;
             } else
             {
+                checkFileExist = true;
                 HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
                 {
                     Message = "Your selected file is already exist!",
@@ -523,8 +533,6 @@ namespace Batch_Rename_App
                     IconKey = ResourceToken.ErrorGeometry,
                     StyleKey = "MessageBoxCustom"
                 });
-
-                return;
             }
             update_Filepage();
         }
@@ -621,13 +629,18 @@ namespace Batch_Rename_App
             {
                 foreach (string item in dialog.FileNames)
                 {
-                    addFolderToListView(item);
+                    addFolderToListView(item, out bool checkFolderExist);
+
+                    if (checkFolderExist)
+                    {
+                        AddBatchingFolder_Click(sender, e);
+                    }
                 }
             }
 
         }
 
-        private void addFolderToListView(string folderNamePath)
+        private void addFolderToListView(string folderNamePath, out bool checkFolderExist)
         {
             if (!isFolderExist(folderNamePath))
             {
@@ -638,8 +651,26 @@ namespace Batch_Rename_App
 
                 foreach (var item in InsideFoldersList)                     // thêm đệ quy
                 {
-                    addFolderToListView(item);
-                }             
+                    addFolderToListView(item, out bool checkChildFolderExist);
+
+                    if (checkChildFolderExist) break;
+                }
+
+                checkFolderExist = false;
+            } else
+            {
+                checkFolderExist = true;
+
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = "Your selected folder is already exist!",
+                    Caption = "Folder already exists",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
+
             }
             update_Folderpage();
         }
@@ -761,7 +792,7 @@ namespace Batch_Rename_App
             {
                 foreach (string filePath in droppedFilePaths)
                 {
-                    addFileToListView(filePath);
+                    addFileToListView(filePath, out bool checkFileExist);
                 }
             }
         }
@@ -790,7 +821,7 @@ namespace Batch_Rename_App
 
                 foreach (string folderPath in droppedFolderPaths)
                 {
-                    addFolderToListView(folderPath);
+                    addFolderToListView(folderPath, out bool checkFolderExist);
                 }
             }
         }
