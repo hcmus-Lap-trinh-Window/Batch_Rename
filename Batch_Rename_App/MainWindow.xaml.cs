@@ -13,8 +13,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -175,7 +178,7 @@ namespace Batch_Rename_App
         /// <summary>
         /// ApplyRuleToFiles: Apply tát cả rule vào danh sách các file.
         /// </summary>
-        private void ApplyRulesToFiles()
+        private void ApplyRulesToFiles(object sender = null)
         {
             try
             {
@@ -207,17 +210,39 @@ namespace Batch_Rename_App
                     this.FileList[i].NewFileName = fileNameList[i];
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                handleException(ex.Message, sender);
             }
+        }
+        private async void handleException(string exceptionMessage, object sender)
+        {
+            await Task.Run(() =>
+            {
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = exceptionMessage,
+                    Caption = "Apply Rule Error",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
+                
+            });
+
+            CheckBox b = sender as CheckBox;
+            IRule rule = b.CommandParameter as IRule;
+
+            rule.IsInUse = false;
+            RuleList.SelectedItem = rule;
         }
 
         /// <author>Nguyen Tuan Khanh</author>
         /// <summary>
-        /// ApplyRuleToFolders: Apply tất cả rules vào danh sách các file.
+        /// ApplyRuleToFolders: Apply tất cả rules vào danh sách các folder.
         /// </summary>
-        private void ApplyRuleToFolders()
+        private void ApplyRuleToFolders(object sender = null)
         {
             try
             {
@@ -247,10 +272,9 @@ namespace Batch_Rename_App
                     this.FileList[i].NewFileName = folderNameList[i];
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                //handleException(ex.Message, sender);
             }
         }
 
@@ -438,40 +462,15 @@ namespace Batch_Rename_App
 
         private void Use_Rule_Checkbox_Checked(object sender, RoutedEventArgs e)
         {
-            ApplyRulesToFiles();
+            ApplyRulesToFiles(sender);
         }
 
         private void Use_Rule_Checkbox_Unchecked(object sender, RoutedEventArgs e)
         {
-            ApplyRulesToFiles();
+            ApplyRulesToFiles(sender);
         }
 
         private void Remove_Rule_Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ListBoxItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void ListBoxItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void ListBoxItem_MouseMove(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void ListBoxItem_Drop(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
 
         }
