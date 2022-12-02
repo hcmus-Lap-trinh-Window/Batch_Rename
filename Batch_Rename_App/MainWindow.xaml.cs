@@ -160,6 +160,12 @@ namespace Batch_Rename_App
 
         }
 
+        /// <summary>
+        /// StartBatching_Click: handler cho sự kiện click vào Button Start Bactching
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartBatching_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -168,7 +174,6 @@ namespace Batch_Rename_App
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -269,7 +274,7 @@ namespace Batch_Rename_App
                 }
                 for (int i = 0; i < count; i++)
                 {
-                    this.FileList[i].NewFileName = folderNameList[i];
+                    this.FolderList[i].NewFolderName = folderNameList[i];
                 }
             }
             catch (Exception ex)
