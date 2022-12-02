@@ -512,6 +512,19 @@ namespace Batch_Rename_App
                         addFileToListView(item);
                     }
                 }
+            } else
+            {
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = "Your selected file is already exist!",
+                    Caption = "File already exists",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
+
+                return;
             }
             update_Filepage();
         }
