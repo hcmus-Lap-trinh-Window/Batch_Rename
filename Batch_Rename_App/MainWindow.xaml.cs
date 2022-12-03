@@ -98,19 +98,19 @@ namespace Batch_Rename_App
                             // set text for preset name input
                             this.presetNameInput.Text = projectStatus.Preset;
                             // set file
-                            this.FileList = projectStatus.FileList;                                                       
+                            this.FileList = projectStatus.FileList;
                             update_Filepage();
                             // set folder
-                            this.FolderList = projectStatus.FolderList;                         
+                            this.FolderList = projectStatus.FolderList;
                             update_Folderpage();
 
-                            
-                            isInit = true; 
+
+                            isInit = true;
                         }
                     }
-                }    
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -166,16 +166,83 @@ namespace Batch_Rename_App
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void StartBatching_Click(object sender, RoutedEventArgs e)
+        private async void StartBatching_Click(object sender, RoutedEventArgs e)
         {
+             string targetFolder = String.Empty;
             try
             {
-                
+                #region validate
+
+                if (_RuleList == null || _RuleList.Count < 1)
+                {
+                    throw new Exception("Rule list is empty or null");
+                }
+                if (!_RuleList.Any(rule => rule.IsInUse))
+                {
+                    throw new Exception("No Rule has been selected to rename");
+                }
+                if (FileList == null || FileList.Count < 1)
+                {
+                    throw new Exception("No File has been selected to rename");
+                }
+
+                #endregion
+
+                #region Chọn folder                
+
+                CommonOpenFileDialog folderBrowserDialog = new CommonOpenFileDialog();
+                folderBrowserDialog.IsFolderPicker = true;
+                if (folderBrowserDialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    targetFolder = folderBrowserDialog.FileName;
+                }
+
+                #endregion
+
+                #region Copy & rename
+
+                foreach (var file in FileList)
+                {
+                    string destinationFilePath = System.IO.Path.Combine(targetFolder, file.NewFileName);
+                    var newFileInfo = new FileInfo(destinationFilePath);
+                    if (newFileInfo.Exists)
+                    {
+                        newFileInfo.Delete();
+                    }
+                    using (FileStream SourceStream = File.Open(file.FilePath, FileMode.Open))
+                    {
+                        using (FileStream DestinationStream = File.Create(destinationFilePath))
+                        {
+                            await SourceStream.CopyToAsync(DestinationStream);
+                        }
+                    }
+                }
+
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = "Batching Successfully",
+                    Caption = "Batching",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.SuccessBrush,
+                    IconKey = ResourceToken.SuccessGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
+
+                #endregion
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = ex.Message,
+                    Caption = ex.InnerException?.Message,
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
             }
+            return;
         }
 
 
@@ -233,7 +300,7 @@ namespace Batch_Rename_App
                     IconKey = ResourceToken.ErrorGeometry,
                     StyleKey = "MessageBoxCustom"
                 });
-                
+
             });
 
             CheckBox b = sender as CheckBox;
@@ -280,12 +347,13 @@ namespace Batch_Rename_App
             catch (Exception ex)
             {
                 //handleException(ex.Message, sender);
+                throw;
             }
         }
 
         private void RestoreFilesName()
         {
-            foreach(var file in this.FileList)
+            foreach (var file in this.FileList)
             {
                 file.NewFileName = file.FileName;
             }
@@ -416,7 +484,7 @@ namespace Batch_Rename_App
                     }
                 }
             }
-            catch(DirectoryNotFoundException dnfe)
+            catch (DirectoryNotFoundException dnfe)
             {
                 System.IO.Directory.CreateDirectory(filePath);
             }
@@ -428,8 +496,9 @@ namespace Batch_Rename_App
             {
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
-            
+
         }
+       
         /// <summary>
         /// Lấy tất cả các file .json có trong FolderName có đường dẫn BatchRename/Batch_Rename/BIN/FolderName
         /// </summary>
@@ -440,7 +509,7 @@ namespace Batch_Rename_App
             List<string> result = new List<string>();
             try
             {
-                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + FolderName+"\\");
+                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + FolderName + "\\");
                 FileInfo[] fi = di.GetFiles("*.json");
                 if (fi != null && fi.Length > 0)
                 {
@@ -454,7 +523,7 @@ namespace Batch_Rename_App
             {
                 System.IO.Directory.CreateDirectory(Directory.GetCurrentDirectory() + $"\\{FolderName}\\");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
@@ -491,7 +560,7 @@ namespace Batch_Rename_App
                 {
                     addFileToListView(item, out bool checkFileExist);
 
-                    if(checkFileExist)
+                    if (checkFileExist)
                     {
                         AddBatchingFile_Click(sender, e);
                     }
@@ -508,7 +577,8 @@ namespace Batch_Rename_App
                     MyFile newFile = new MyFile(fileNamePath);
                     FileList.Add(newFile);
                     ApplyRulesToFiles();
-                } else if (Directory.Exists(fileNamePath))              // thêm đệ quy khi đưa vào folder
+                }
+                else if (Directory.Exists(fileNamePath))              // thêm đệ quy khi đưa vào folder
                 {
                     string[] InsideFilesList = Directory.GetFiles(fileNamePath, "*", SearchOption.AllDirectories);
 
@@ -516,12 +586,13 @@ namespace Batch_Rename_App
                     {
                         addFileToListView(item, out bool isChildFileExist);
 
-                        if(isChildFileExist) break;
+                        if (isChildFileExist) break;
                     }
                 }
 
                 checkFileExist = false;
-            } else
+            }
+            else
             {
                 checkFileExist = true;
                 HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
@@ -657,7 +728,8 @@ namespace Batch_Rename_App
                 }
 
                 checkFolderExist = false;
-            } else
+            }
+            else
             {
                 checkFolderExist = true;
 
@@ -849,7 +921,7 @@ namespace Batch_Rename_App
                 projectStatus.FolderList = this.FolderList;
                 projectStatus.RulesList = new List<RuleJson>();
                 projectStatus.Preset = PresetComboBox.SelectedValue != null ? PresetComboBox.SelectedValue.ToString() : string.Empty;
-                if (_RuleList!= null)
+                if (_RuleList != null)
                 {
                     foreach (var rule in _RuleList)
                     {
@@ -860,14 +932,15 @@ namespace Batch_Rename_App
                         });
                     }
                 }
-                
+
                 var projectStatusJson = JsonSerializer.Serialize(projectStatus);
                 var dateTime = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
                 var fileName = Directory.GetCurrentDirectory() + @$"\\ProjectStatus\\{dateTime}.json";
                 SaveJson(fileName, projectStatusJson);
             }
-            catch (Exception ex) {
-                
+            catch (Exception ex)
+            {
+
             }
         }
     }
