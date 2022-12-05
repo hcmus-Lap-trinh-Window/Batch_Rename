@@ -42,7 +42,7 @@ namespace Batch_Rename_App
         public BindingList<MyFolder> FolderList = new BindingList<MyFolder>();
         public ProjectStatus projectStatus = new ProjectStatus();
         public bool FirstInit = true;
-
+        public bool isAutoSaveMode = false;
 
         private readonly int itemPerPage = 5;
         private int currentFilePage { get; set; } = 1;
@@ -898,14 +898,30 @@ namespace Batch_Rename_App
             }
         }
 
+        /// <author>Do Thai Duy</author>
+        /// <edit>Nguyen Tuan Khanh</edit>
+        /// <summary>
+        /// Xử lý sự kiện check vào auto save
+        /// Khanh: đặt chế độ autosave
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Auto_Save_Checked(object sender, RoutedEventArgs e)
         {
-
+            this.isAutoSaveMode = true;
         }
 
+
+        /// <author>Do Thai Duy</author>
+        /// <edit>Nguyen Tuan Khanh</edit><summary>
+        ///  Xử lý sự kiện check vào auto save
+        /// Khanh: tắt chế độ autosave
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Auto_Save_UnChecked(object sender, RoutedEventArgs e)
         {
-
+            this.isAutoSaveMode = false;
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -942,6 +958,56 @@ namespace Batch_Rename_App
             {
 
             }
+        }
+
+        /// <author>Truong Cong Thanh, Nguyen Tuan Khanh</author>
+        /// <summary>
+        /// Lưu lại trạng thái của project.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        private void SaveProjectStatus()
+        {
+            try
+            {
+                ProjectStatus projectStatus = new ProjectStatus();
+                projectStatus.Width = this.Width;
+                projectStatus.Height = this.Height;
+                projectStatus.currentFolderPage = this.currentFolderPage;
+                projectStatus.currentFilePage = this.currentFilePage;
+                projectStatus.FileList = this.FileList;
+                projectStatus.FolderList = this.FolderList;
+                projectStatus.RulesList = new List<RuleJson>();
+                projectStatus.Preset = PresetComboBox.SelectedValue != null ? PresetComboBox.SelectedValue.ToString() : string.Empty;
+                if (_RuleList != null)
+                {
+                    foreach (var rule in _RuleList)
+                    {
+                        projectStatus.RulesList.Add(new RuleJson()
+                        {
+                            Name = rule.Name,
+                            Json = rule.ToJson()
+                        });
+                    }
+                }
+
+                var projectStatusJson = JsonSerializer.Serialize(projectStatus);
+                var dateTime = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
+                var fileName = Directory.GetCurrentDirectory() + @$"\\ProjectStatus\\{dateTime}.json";
+                SaveJson(fileName, projectStatusJson);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+        }
+
+        /// <author>Nguyen Tuan Khanh</author>
+        /// <summary>
+        /// Tự động lưu lại trạng thái của project
+        /// </summary>
+        private void AutoSaveProjectStatus()
+        {
+
         }
     }
 }
