@@ -43,6 +43,7 @@ namespace Batch_Rename_App
         public ProjectStatus projectStatus = new ProjectStatus();
         public bool FirstInit = true;
         public bool isAutoSaveMode = false;
+        private Thread AutoSaveThread;
 
         private readonly int itemPerPage = 5;
         private int currentFilePage { get; set; } = 1;
@@ -168,7 +169,7 @@ namespace Batch_Rename_App
         /// <param name="e"></param>
         private async void StartBatching_Click(object sender, RoutedEventArgs e)
         {
-             string targetFolder = String.Empty;
+            string targetFolder = String.Empty;
             try
             {
                 #region validate
@@ -497,7 +498,7 @@ namespace Batch_Rename_App
             }
 
         }
-       
+
         /// <summary>
         /// Lấy tất cả các file .json có trong FolderName có đường dẫn BatchRename/Batch_Rename/BIN/FolderName
         /// </summary>
@@ -908,18 +909,37 @@ namespace Batch_Rename_App
         private void Auto_Save_Checked(object sender, RoutedEventArgs e)
         {
             this.isAutoSaveMode = true;
+            if (AutoSaveThread == null)
+            {
+                try
+                {
+
+                    AutoSaveThread = new Thread(new ThreadStart(() =>
+                    {
+                        AutoSaveProjectStatus();
+                    }));
+                    AutoSaveThread.IsBackground = true;
+                    AutoSaveThread.Start();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
         }
 
 
         /// <author>Do Thai Duy</author>
-        /// <edit>Nguyen Tuan Khanh</edit><summary>
-        ///  Xử lý sự kiện check vào auto save
+        /// <edit>Nguyen Tuan Khanh</edit>
+        /// <summary>
+        ///  Xử lý sự kiện uncheck vào auto save
         /// Khanh: tắt chế độ autosave
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Auto_Save_UnChecked(object sender, RoutedEventArgs e)
         {
+
             this.isAutoSaveMode = false;
         }
 
@@ -975,7 +995,18 @@ namespace Batch_Rename_App
         /// </summary>
         private void AutoSaveProjectStatus()
         {
-
+            try
+            {
+                while (isAutoSaveMode)
+                {
+                    this.Dispatcher.Invoke(() => SaveProjectStatus());
+                    Thread.Sleep(60 * 1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
         }
     }
 }
