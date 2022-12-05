@@ -454,7 +454,7 @@ namespace Batch_Rename_App
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
         }
-        private void SaveJson(string filePath, string data)
+        private void SaveJson(string filePath, string data, bool isOverride = false)
         {
             try
             {
@@ -465,9 +465,8 @@ namespace Batch_Rename_App
                 }
                 var listFile = GetAllJsonFile(folderName);
                 var fileName = System.IO.Path.GetFileName(filePath);
-                if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase))
+                if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase) || isOverride == true)
                 {
-                    //System.IO.Directory.CreateDirectory(@filePath);
                     File.WriteAllText(filePath, data);
                 }
                 else
@@ -926,38 +925,7 @@ namespace Batch_Rename_App
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            try
-            {
-                ProjectStatus projectStatus = new ProjectStatus();
-                projectStatus.Width = this.Width;
-                projectStatus.Height = this.Height;
-                projectStatus.currentFolderPage = this.currentFolderPage;
-                projectStatus.currentFilePage = this.currentFilePage;
-                projectStatus.FileList = this.FileList;
-                projectStatus.FolderList = this.FolderList;
-                projectStatus.RulesList = new List<RuleJson>();
-                projectStatus.Preset = PresetComboBox.SelectedValue != null ? PresetComboBox.SelectedValue.ToString() : string.Empty;
-                if (_RuleList != null)
-                {
-                    foreach (var rule in _RuleList)
-                    {
-                        projectStatus.RulesList.Add(new RuleJson()
-                        {
-                            Name = rule.Name,
-                            Json = rule.ToJson()
-                        });
-                    }
-                }
-
-                var projectStatusJson = JsonSerializer.Serialize(projectStatus);
-                var dateTime = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
-                var fileName = Directory.GetCurrentDirectory() + @$"\\ProjectStatus\\{dateTime}.json";
-                SaveJson(fileName, projectStatusJson);
-            }
-            catch (Exception ex)
-            {
-
-            }
+            SaveProjectStatus();
         }
 
         /// <author>Truong Cong Thanh, Nguyen Tuan Khanh</author>
@@ -992,8 +960,8 @@ namespace Batch_Rename_App
 
                 var projectStatusJson = JsonSerializer.Serialize(projectStatus);
                 var dateTime = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
-                var fileName = Directory.GetCurrentDirectory() + @$"\\ProjectStatus\\{dateTime}.json";
-                SaveJson(fileName, projectStatusJson);
+                var fileName = Directory.GetCurrentDirectory() + @"\\ProjectStatus\\ProjectStatus.json";
+                SaveJson(fileName, projectStatusJson, true);
             }
             catch (Exception ex)
             {
