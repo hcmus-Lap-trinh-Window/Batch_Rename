@@ -83,7 +83,15 @@ namespace Batch_Rename_App
             }
             catch (Exception ex)
             {
-
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = ex.Message,
+                    Caption = "Init Project From Previous Status",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
             }
             return isInit;
         }
@@ -114,7 +122,15 @@ namespace Batch_Rename_App
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = String.Format("{0}. {1}", ex.Message, ex.InnerException != null ? ex.InnerException.Message : String.Empty),
+                    Caption = "Init Project From Previous Status",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
             }
             return isInit;
         }
@@ -167,9 +183,17 @@ namespace Batch_Rename_App
                     FirstInit = false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = String.Format("{0}. {1}", ex.Message, ex.InnerException != null ? ex.InnerException.Message : String.Empty),
+                    Caption = "Init Project From Previous Status",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
             }
             return isInit;
         }
@@ -216,10 +240,11 @@ namespace Batch_Rename_App
                     string sStatus = File.ReadAllText(filePath);
                     ps = JsonSerializer.Deserialize<ProjectStatus>(sStatus);
                 }
-                catch(Exception ex) {
+                catch (Exception ex)
+                {
                     msgError = ex.Message;
                 }
-                if (ps == null) 
+                if (ps == null)
                 {
                     HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
                     {
@@ -280,9 +305,10 @@ namespace Batch_Rename_App
                 {
                     throw new Exception("No Rule has been selected to rename");
                 }
-                if (FileList == null || FileList.Count < 1)
+                var isFileListAndFolderListEmpty = (FileList == null || FileList.Count == 0) && (FolderList == null || FolderList.Count == 0);
+                if (isFileListAndFolderListEmpty)
                 {
-                    throw new Exception("No File has been selected to rename");
+                    throw new Exception("Both File list and Folder list is empty. Please select at least one file or folder.");
                 }
 
                 #endregion
@@ -317,6 +343,11 @@ namespace Batch_Rename_App
                     }
                 }
 
+                foreach (var folder in FolderList)
+                {
+                    BatchFolderRecursively(folder, new DirectoryInfo(targetFolder));
+                }
+
                 HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
                 {
                     Message = "Batching Successfully",
@@ -344,6 +375,64 @@ namespace Batch_Rename_App
             return;
         }
 
+        private async void BatchFolderRecursively(MyFolder folder, DirectoryInfo destinationDirectoryInfo)
+        {
+            try
+            {
+                if (!destinationDirectoryInfo.Exists)
+                {
+                    destinationDirectoryInfo.Create();
+                }
+
+                var sourceDirectoryInfo = new DirectoryInfo(folder.FolderPath);
+                var destinationSubDirectory = destinationDirectoryInfo.CreateSubdirectory(folder.NewFolderName);
+                CopyAll(sourceDirectoryInfo, destinationSubDirectory);
+                //var subDirectorieInfoArray = sourceDirectoryInfo.GetDirectories();
+                //if (subDirectorieInfoArray.Length < 1)
+                //{
+                //    return;
+                //}
+
+                //foreach (var subDirectoryInfo in subDirectorieInfoArray)
+                //{
+                //    var subFolder = FolderList.First(folder => String.Equals(subDirectoryInfo.FullName, folder.FolderPath));    // lấy thông tin sub folder.
+                //    if (subFolder != null)
+                //    {
+                //        var destinationSubDirectory = destinationDirectoryInfo.CreateSubdirectory(subFolder.NewFolderName);     // create new sub folder in target
+                //        BatchFolderRecursively(subFolder, destinationSubDirectory);
+                //    }
+                //}
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            try
+            {
+                // Copy each file into it's new directory.
+                foreach (FileInfo fi in source.GetFiles())
+                {
+                    Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
+                    fi.CopyTo(System.IO.Path.Combine(target.ToString(), fi.Name), true);
+                }
+
+                // Copy each subdirectory using recursion.
+                foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+                {
+                    DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+                    CopyAll(diSourceSubDir, nextTargetSubDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+        }
 
         /// <author>Nguyen Tuan Khanh</author>
         /// <summary>
@@ -445,8 +534,7 @@ namespace Batch_Rename_App
             }
             catch (Exception ex)
             {
-                //handleException(ex.Message, sender);
-                throw;
+                handleException(ex.Message, sender);
             }
         }
 
@@ -664,11 +752,13 @@ namespace Batch_Rename_App
         private void Use_Rule_Checkbox_Checked(object sender, RoutedEventArgs e)
         {
             ApplyRulesToFiles(sender);
+            ApplyRuleToFolders(sender);
         }
 
         private void Use_Rule_Checkbox_Unchecked(object sender, RoutedEventArgs e)
         {
             ApplyRulesToFiles(sender);
+            ApplyRuleToFolders(sender);
         }
 
         private void Remove_Rule_Button_Click(object sender, RoutedEventArgs e)
@@ -716,11 +806,9 @@ namespace Batch_Rename_App
                     foreach (var item in InsideFilesList)
                     {
                         addFileToListView(item, out bool isChildFileExist);
-
                         if (isChildFileExist) break;
                     }
                 }
-
                 checkFileExist = false;
             }
             else
@@ -879,6 +967,8 @@ namespace Batch_Rename_App
                 }
 
                 checkFolderExist = false;
+                ApplyRuleToFolders();
+
             }
             else
             {
@@ -1147,7 +1237,15 @@ namespace Batch_Rename_App
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = String.Format("{0}. {1}", ex.Message, ex.InnerException != null ? ex.InnerException.Message : String.Empty),
+                    Caption = "Lưu lại trạng thái của project.",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
             }
             return jsonResult;
         }
@@ -1168,7 +1266,7 @@ namespace Batch_Rename_App
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo { Message = String.Format("{0}. {1}", ex.Message, ex.InnerException != null ? ex.InnerException.Message : String.Empty), Caption = "Init Project From Previous Status", Button = MessageBoxButton.OK, IconBrushKey = ResourceToken.AccentBrush, IconKey = ResourceToken.ErrorGeometry, StyleKey = "MessageBoxCustom" });
             }
         }
     }
