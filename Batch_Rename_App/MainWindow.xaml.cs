@@ -403,10 +403,10 @@ namespace Batch_Rename_App
                 //    }
                 //}
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
         }
 
