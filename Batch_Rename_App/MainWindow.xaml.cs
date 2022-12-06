@@ -507,7 +507,36 @@ namespace Batch_Rename_App
         {
             var selectedRuleName = (string)RuleComboBox.SelectedItem;
             var selectedRuleInstance = _RuleFactory.CreateRuleInstance(selectedRuleName);
-            _RuleList.Add(selectedRuleInstance);
+            checkAndAddRule(selectedRuleName, selectedRuleInstance);
+        }
+
+        private void checkAndAddRule(string selectedRuleName, IRule selectedRule)
+        {
+            var checkRuleExist = false;
+
+            foreach (var item in _RuleList)
+            {
+                if (item.Name == selectedRuleName)
+                {
+                    checkRuleExist = true;
+                    break;
+                }
+            }
+
+            if (checkRuleExist)
+            {
+                HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = "Your selected rule has already chosen!",
+                    Caption = "Rule duplication",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
+            }
+            else
+                _RuleList.Add(selectedRule);
         }
 
         private void Browse_Rule_Button_Click(object sender, RoutedEventArgs e)
@@ -644,7 +673,11 @@ namespace Batch_Rename_App
 
         private void Remove_Rule_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            Button b = sender as Button;
+            IRule rule = b.CommandParameter as IRule;
+            _RuleList.Remove(rule);
+            ApplyRulesToFiles();
+            ApplyRuleToFolders();
         }
 
         private void AddBatchingFile_Click(object sender, RoutedEventArgs e)
@@ -744,7 +777,27 @@ namespace Batch_Rename_App
 
         private void ClearAllFile_Click(object sender, RoutedEventArgs e)
         {
+            if (FileList.Count == 0) return;
 
+            MessageBoxResult result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+            {
+                Message = "Do you want to clear all current files?",
+                Caption = "Clear All Files",
+                Button = MessageBoxButton.YesNo,
+                IconBrushKey = ResourceToken.AccentBrush,
+                IconKey = ResourceToken.AskGeometry,
+                StyleKey = "MessageBoxCustom"
+            });
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    FileList.Clear();
+                    update_Filepage();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
         }
 
         private void FileList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -816,7 +869,7 @@ namespace Batch_Rename_App
                 MyFolder newFolder = new MyFolder(folderNamePath);
                 FolderList.Add(newFolder);
 
-                string[] InsideFoldersList = Directory.GetDirectories(folderNamePath, "*", SearchOption.AllDirectories);
+                string[] InsideFoldersList = Directory.GetDirectories(folderNamePath, "*", SearchOption.TopDirectoryOnly);
 
                 foreach (var item in InsideFoldersList)                     // thêm đệ quy
                 {
@@ -884,7 +937,27 @@ namespace Batch_Rename_App
 
         private void ClearAllFolder_Click(object sender, RoutedEventArgs e)
         {
+            if (FolderList.Count == 0) return;
 
+            MessageBoxResult result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+            {
+                Message = "Do you want to clear all current folders?",
+                Caption = "Clear All Folders",
+                Button = MessageBoxButton.YesNo,
+                IconBrushKey = ResourceToken.AccentBrush,
+                IconKey = ResourceToken.AskGeometry,
+                StyleKey = "MessageBoxCustom"
+            });
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    FolderList.Clear();
+                    update_Folderpage();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
         }
 
         private void page_FolderPageUpdated(object sender, HandyControl.Data.FunctionEventArgs<int> e)
@@ -945,11 +1018,6 @@ namespace Batch_Rename_App
             update_Folderpage();
         }
 
-        private void DragOverFilePage(object sender, DragEventArgs e)
-        {
-
-        }
-
         private void DragOverFileList(object sender, DragEventArgs e)
         {
 
@@ -971,11 +1039,6 @@ namespace Batch_Rename_App
         {
             currentFilePage = e.Info;
             update_Filepage();
-        }
-
-        private void DragOverFolderPage(object sender, DragEventArgs e)
-        {
-
         }
 
         private void DragOverFolderList(object sender, DragEventArgs e)
