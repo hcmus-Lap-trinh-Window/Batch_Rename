@@ -55,9 +55,10 @@ namespace Batch_Rename_App
             this._RuleFactory = RuleFactory.GetInstance(ruleConfig);
             InitializeComponent();
         }
-        private bool initProjectFromPreviousStatus()
+        private bool InitProjectFromPreviousStatus()
         {
             bool isInit = false;
+            FirstInit = true;
             try
             {
                 var previousStatus = GetAllJsonFile("ProjectStatus").LastOrDefault();
@@ -70,49 +71,104 @@ namespace Batch_Rename_App
                         var projectStatus = JsonSerializer.Deserialize<ProjectStatus>(previousStatusJson);
                         if (projectStatus != null)
                         {
-                            _RuleList = new ObservableCollection<IRule>();
-                            if (projectStatus.RulesList != null)
-                            {
-                                foreach (var ruleJson in projectStatus.RulesList)
-                                {
-                                    var rule = _RuleFactory.CreateRuleInstance(ruleJson);
-                                    _RuleList.Add(rule);
-                                }
-                            }
-                            // set current file page and folder page
-                            this.currentFilePage = projectStatus.currentFilePage;
-                            FilePagination.PageIndex = projectStatus.currentFilePage;
-                            this.currentFolderPage = projectStatus.currentFolderPage;
-                            FolderPagination.PageIndex = projectStatus.currentFolderPage;
-                            // set project resolution
-                            this.Height = projectStatus.Height;
-                            this.Width = projectStatus.Width;
-                            // set rule combo box
-                            this.RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
-                            // set rule list
-                            this.RuleList.ItemsSource = _RuleList;
-                            // set text and item source for preset combo box
-                            this.PresetComboBox.SelectedItem = projectStatus.Preset;
-                            this._PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).OrderBy(c => c).ToList());
-                            this.PresetComboBox.ItemsSource = this._PresetComboBox;
-                            // set text for preset name input
-                            this.presetNameInput.Text = projectStatus.Preset;
-                            // set file
-                            this.FileList = projectStatus.FileList;
-                            update_Filepage();
-                            // set folder
-                            this.FolderList = projectStatus.FolderList;
-                            update_Folderpage();
-
-
-                            isInit = true;
+                            isInit = InitProjectFromPreviousStatus(projectStatus);
                         }
+                    }
+                    if (isInit)
+                    {
+                        FirstInit = false;
                     }
                 }
             }
             catch (Exception ex)
             {
 
+            }
+            return isInit;
+        }
+        private bool InitProjectFromPreviousStatus(string fileName)
+        {
+            bool isInit = false;
+            FirstInit = true;
+            try
+            {
+                var previousStatus = GetAllJsonFile("ProjectStatus").Where(c => c == fileName).FirstOrDefault();
+                if (previousStatus != null)
+                {
+                    var projectStatusDir = Directory.GetCurrentDirectory() + $"\\ProjectStatus\\{previousStatus}";
+                    var previousStatusJson = File.ReadAllText(projectStatusDir);
+                    if (previousStatusJson != null)
+                    {
+                        var projectStatus = JsonSerializer.Deserialize<ProjectStatus>(previousStatusJson);
+                        if (projectStatus != null)
+                        {
+                            isInit = InitProjectFromPreviousStatus(projectStatus);
+                        }
+                    }
+                    if (isInit)
+                    {
+                        FirstInit = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+            return isInit;
+        }
+        private bool InitProjectFromPreviousStatus(ProjectStatus projectStatus)
+        {
+            bool isInit = false;
+            FirstInit = true;
+            try
+            {
+                if (projectStatus != null)
+                {
+                    _RuleList = new ObservableCollection<IRule>();
+                    if (projectStatus.RulesList != null)
+                    {
+                        foreach (var ruleJson in projectStatus.RulesList)
+                        {
+                            var rule = _RuleFactory.CreateRuleInstance(ruleJson);
+                            _RuleList.Add(rule);
+                        }
+                    }
+                    // set current file page and folder page
+                    this.currentFilePage = projectStatus.currentFilePage;
+                    FilePagination.PageIndex = projectStatus.currentFilePage;
+                    this.currentFolderPage = projectStatus.currentFolderPage;
+                    FolderPagination.PageIndex = projectStatus.currentFolderPage;
+                    // set project resolution
+                    this.Height = projectStatus.Height;
+                    this.Width = projectStatus.Width;
+                    // set rule combo box
+                    this.RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
+                    // set rule list
+                    this.RuleList.ItemsSource = _RuleList;
+                    // set text and item source for preset combo box
+                    this.PresetComboBox.SelectedItem = projectStatus.Preset;
+                    this._PresetComboBox = new ObservableCollection<string>(GetAllJsonFile("Preset").Select(c => c.getFileName()).OrderBy(c => c).ToList());
+                    this.PresetComboBox.ItemsSource = this._PresetComboBox;
+                    // set text for preset name input
+                    this.presetNameInput.Text = projectStatus.Preset;
+                    // set file
+                    this.FileList = projectStatus.FileList;
+                    update_Filepage();
+                    // set folder
+                    this.FolderList = projectStatus.FolderList;
+                    update_Folderpage();
+
+                    isInit = true;
+                }
+                if (isInit)
+                {
+                    FirstInit = false;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
             return isInit;
         }
@@ -132,7 +188,7 @@ namespace Batch_Rename_App
             NumberOfBatchingFiles.DataContext = 0;
             NumberOfErrorFiles.DataContext = 0;
 
-            var canInit = initProjectFromPreviousStatus();
+            var canInit = InitProjectFromPreviousStatus("ProjectStatus.json");
             if (canInit)
             {
                 FirstInit = false;
@@ -147,17 +203,59 @@ namespace Batch_Rename_App
 
         private void Open_Project_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Json files (*.json)|*.json";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+                var msgError = string.Empty;
+                ProjectStatus? ps = null;
+                try
+                {
+                    string sStatus = File.ReadAllText(filePath);
+                    ps = JsonSerializer.Deserialize<ProjectStatus>(sStatus);
+                }
+                catch(Exception ex) {
+                    msgError = ex.Message;
+                }
+                if (ps == null) 
+                {
+                    HandyControl.Controls.MessageBox.Show(new MessageBoxInfo
+                    {
+                        Message = msgError,
+                        Caption = "Open Project Failed",
+                        Button = MessageBoxButton.OK,
+                        IconBrushKey = ResourceToken.AccentBrush,
+                        IconKey = ResourceToken.ErrorGeometry,
+                        StyleKey = "MessageBoxCustom"
+                    });
+                }
+                else
+                {
+                    var canInit = InitProjectFromPreviousStatus(ps);
+                }
+            }
         }
 
         private void Save_Project_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            SaveProjectStatus();
         }
 
         private void Save_As_Project_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = ".json";
+            saveFileDialog.Filter = "JSON files(*.json)|*.json";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filePath = saveFileDialog.FileName;
+                var saveAs = SaveProjectStatus();
+                if (saveAs != null)
+                {
+                    File.WriteAllText(filePath, saveAs);
+                }
+            }
         }
 
         /// <summary>
@@ -933,8 +1031,9 @@ namespace Batch_Rename_App
         /// Lưu lại trạng thái của project.
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private void SaveProjectStatus()
+        private string SaveProjectStatus()
         {
+            string jsonResult = string.Empty;
             try
             {
                 ProjectStatus projectStatus = new ProjectStatus();
@@ -959,14 +1058,15 @@ namespace Batch_Rename_App
                 }
 
                 var projectStatusJson = JsonSerializer.Serialize(projectStatus);
-                var dateTime = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
                 var fileName = Directory.GetCurrentDirectory() + @"\\ProjectStatus\\ProjectStatus.json";
                 SaveJson(fileName, projectStatusJson, true);
+                jsonResult = projectStatusJson;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
+            return jsonResult;
         }
 
         /// <author>Nguyen Tuan Khanh</author>
