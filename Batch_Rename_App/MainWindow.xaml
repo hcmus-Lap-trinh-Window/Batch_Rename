@@ -86,24 +86,23 @@
                 Margin="5,0,5,0"
                 Name="RuleList"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=5}">
                     <ListView.Resources>
                         <Style TargetType="GridViewColumnHeader">
                             <Setter Property="Visibility" Value="Collapsed" />
-
                         </Style>
                         <!--Layout for Default Item-->
                         <DataTemplate x:Key="DefaultItemTemplate">
-                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
-                                <Grid Height="30" Width="310">
+                            <StackPanel x:Name="RuleRow" Width="350" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                                <Grid Height="40" Width="350">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/down-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <TextBlock  Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                    <Image Grid.Column="0" Width="16" Height="20" VerticalAlignment="Center" Source="/Images/down-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock  Grid.Column="1" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
                                     <CheckBox IsChecked="{Binding IsInUse}" Checked="Use_Rule_Checkbox_Checked" Unchecked="Use_Rule_Checkbox_Unchecked" CommandParameter="{Binding}" Grid.Column="2" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
                                     <Button x:Name="Remove_Rule_Button" CommandParameter="{Binding}" Click="Remove_Rule_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
                                         <Button.Style>
@@ -134,16 +133,16 @@
 
                         <!--Layout for Selected Item-->
                         <DataTemplate x:Key="SelectedItemTemplate">
-                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
-                                <Grid Height="30" Width="310">
+                            <StackPanel x:Name="RuleRow" Width="350" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                                <Grid Height="40" Width="350">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/up-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <TextBlock  Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                    <Image Grid.Column="0" Width="16" Height="20" VerticalAlignment="Center" Source="/Images/up-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock  Grid.Column="1" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
                                     <CheckBox IsChecked="{Binding IsInUse}"  Checked="Use_Rule_Checkbox_Checked" Unchecked="Use_Rule_Checkbox_Unchecked" CommandParameter="{Binding}" Grid.Column="2" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
                                     <Button x:Name="Remove_Rule_Button" CommandParameter="{Binding}" Click="Remove_Rule_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
                                         <Button.Style>
@@ -177,11 +176,11 @@
                     </ListView.Background>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="Padding" Value="5"/>
-                            <Setter Property="Margin" Value="0,0,0,0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="0,0,0,3"/>
                             <Setter Property="MinHeight" Value="40"/>
                             <Setter Property="MaxHeight" Value="40"/>
+                            <Setter Property="Padding" Value="0.7" />
                             <Setter Property="VerticalContentAlignment" Value="Top"/>
                             <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
                             <Setter Property="Background" Value="White"/>
@@ -191,16 +190,16 @@
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="40" To="195" Duration="0:0:0.5" />
-                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="40" To="195" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="40" To="165" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="40" To="165" Duration="0:0:0.5" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.EnterActions>
                                     <Trigger.ExitActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="195" To="40" Duration="0:0:0.5" />
-                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="195" To="40" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="165" To="40" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="165" To="40" Duration="0:0:0.5" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.ExitActions>
