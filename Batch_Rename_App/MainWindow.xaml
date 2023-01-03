@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Batch_Rename_App" xmlns:hc="https://handyorg.github.io/handycontrol"
-        xmlns:converter ="clr-namespace:Converter"
+        xmlns:local="clr-namespace:Batch_Rename_App.Converters" xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
         Icon="/Images/rename.png"
         Title="Batch Rename" MinHeight="650" MinWidth="1360" ResizeMode="CanResizeWithGrip"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
     <Window.Resources>
-        <converter:StatusColorConverter x:Key="StatusColorConverter" />
+        <local:StatusColorConverter x:Key="StatusColorConverter" />
+        <local:ImageExtensionConverter x:Key="ImageExtensionConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="True" Margin="10px">
         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
@@ -51,38 +52,31 @@
             <DockPanel DockPanel.Dock="Left" LastChildFill="True" Margin="0, 0, 5, 0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
                            DockPanel.Dock="Top">
-                    <TextBlock VerticalAlignment="Center"  Text="Preset: " Margin="0,0,16,0"/>
-                    <hc:ComboBox Name="PresetComboBox" Width="163" hc:InfoElement.Placeholder="Add your presets" SelectionChanged="PresetComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
-                    <Button Cursor="Hand" Name="Clear_All_Preset_Button" Click="Clear_All_Preset_Button_Click" Margin="5px" Width="120">
+                    <TextBlock VerticalAlignment="Center"  Text="Select Preset: " Width="80"/>
+                    <hc:ComboBox Name="PresetComboBox" Width="173" hc:InfoElement.Placeholder="Add your presets" SelectionChanged="PresetComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
+                    <Button Cursor="Hand" Name="Clear_All_Preset_Button" Click="Clear_All_Preset_Button_Click" Margin="5px" Width="110">
                         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                             <Image Source="Images/dust.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Text="Clear Presets"/>
+                            <TextBlock Text="Clear All"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
-
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
                             DockPanel.Dock="Top">
-                    <TextBlock VerticalAlignment="Center" Text="Add Rule: "/>
-                    <hc:ComboBox Name="RuleComboBox" Width="163" hc:InfoElement.Placeholder="Add your rules"  SelectionChanged="RuleComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
-                    <Button Cursor="Hand" Name="Browse_Rule_Button" Click="Browse_Rule_Button_Click" Margin="5px" Width="120">
-                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
-                            <TextBlock Text="Browse..."/>
-                        </StackPanel>
-                    </Button>
-
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,5"
-                            DockPanel.Dock="Top">
-                    <TextBlock VerticalAlignment="Center"  Text="Preset: " Margin="0, 0, 15, 0"/>
-                    <TextBox x:Name="presetNameInput" Width="163" Height="30" Margin="5"></TextBox>
-
-                    <Button Cursor="Hand" Click="SaveRule_Click" Width="120" Margin="5px">
+                    <TextBlock VerticalAlignment="Center"  Text="New Preset: " Width="80" />
+                    <TextBox x:Name="presetNameInput" Width="173" Height="30" Margin="5px"></TextBox>
+                    <Button Cursor="Hand" Click="SaveRule_Click" Width="110" Margin="5px">
                         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
                             <Image Source="Images/save.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                             <TextBlock Text="Save Preset"/>
                         </StackPanel>
                     </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,5"
+                            DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center" Text="Add Rule: " Width="80"/>
+                    <hc:ComboBox Name="RuleComboBox" Width="293" hc:InfoElement.Placeholder="Add your rules"  SelectionChanged="RuleComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
+
                 </StackPanel>
 
                 <StackPanel DockPanel.Dock="Bottom" Height="30" Margin="5"></StackPanel>
@@ -92,24 +86,23 @@
                 Margin="5,0,5,0"
                 Name="RuleList"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=5}">
                     <ListView.Resources>
                         <Style TargetType="GridViewColumnHeader">
                             <Setter Property="Visibility" Value="Collapsed" />
-
                         </Style>
                         <!--Layout for Default Item-->
                         <DataTemplate x:Key="DefaultItemTemplate">
-                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
-                                <Grid Height="30" Width="310">
+                            <StackPanel x:Name="RuleRow" Width="350" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                                <Grid Height="40" Width="350">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/down-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <TextBlock  Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                    <Image Grid.Column="0" Width="16" Height="20" VerticalAlignment="Center" Source="/Images/down-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock  Grid.Column="1" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
                                     <CheckBox IsChecked="{Binding IsInUse}" Checked="Use_Rule_Checkbox_Checked" Unchecked="Use_Rule_Checkbox_Unchecked" CommandParameter="{Binding}" Grid.Column="2" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
                                     <Button x:Name="Remove_Rule_Button" CommandParameter="{Binding}" Click="Remove_Rule_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
                                         <Button.Style>
@@ -140,16 +133,16 @@
 
                         <!--Layout for Selected Item-->
                         <DataTemplate x:Key="SelectedItemTemplate">
-                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
-                                <Grid Height="30" Width="310">
+                            <StackPanel x:Name="RuleRow" Width="350" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                                <Grid Height="40" Width="350">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/up-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <TextBlock  Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                    <Image Grid.Column="0" Width="16" Height="20" VerticalAlignment="Center" Source="/Images/up-arrow.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock  Grid.Column="1" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
                                     <CheckBox IsChecked="{Binding IsInUse}"  Checked="Use_Rule_Checkbox_Checked" Unchecked="Use_Rule_Checkbox_Unchecked" CommandParameter="{Binding}" Grid.Column="2" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
                                     <Button x:Name="Remove_Rule_Button" CommandParameter="{Binding}" Click="Remove_Rule_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
                                         <Button.Style>
@@ -183,35 +176,30 @@
                     </ListView.Background>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="Padding" Value="5"/>
-                            <Setter Property="Margin" Value="0,0,0,0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="0,0,0,3"/>
                             <Setter Property="MinHeight" Value="40"/>
                             <Setter Property="MaxHeight" Value="40"/>
+                            <Setter Property="Padding" Value="0.7" />
                             <Setter Property="VerticalContentAlignment" Value="Top"/>
                             <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
                             <Setter Property="Background" Value="White"/>
                             <Setter Property="AllowDrop" Value="true"/>
-                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_MouseLeftButtonDown"/>
-                            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBoxItem_MouseLeftButtonUp"/>
-                            <EventSetter Event="PreviewMouseMove" Handler="ListBoxItem_MouseMove"/>
-                            <EventSetter Event="Drop" Handler="ListBoxItem_Drop"/>
-                            <EventSetter Event="PreviewMouseRightButtonDown"  Handler="OnPreviewMouseDown"/>
                             <Style.Triggers>
                                 <Trigger Property="IsSelected"  Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="40" To="195" Duration="0:0:0.5" />
-                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="40" To="195" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="40" To="165" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="40" To="165" Duration="0:0:0.5" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.EnterActions>
                                     <Trigger.ExitActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="195" To="40" Duration="0:0:0.5" />
-                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="195" To="40" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MinHeight" From="165" To="40" Duration="0:0:0.5" />
+                                                <DoubleAnimation Storyboard.TargetProperty="MaxHeight" From="165" To="40" Duration="0:0:0.5" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.ExitActions>
@@ -254,7 +242,7 @@
                         </DockPanel>
                         <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" MinHeight="35">
                             <StackPanel DockPanel.Dock="Left" Orientation ="Horizontal" HorizontalAlignment="Left" Margin="5 0 0 0">
-                                <hc:Pagination Name="FilePagination" AllowDrop="True" DragOver="DragOverFilePage" IsJumpEnabled="True" MaxPageInterval ="2" PageUpdated="page_FilePageUpdated" PageIndex="1" />
+                                <hc:Pagination Name="FilePagination" IsJumpEnabled="True" MaxPageInterval ="2" PageUpdated="page_FilePageUpdated" PageIndex="1" />
                             </StackPanel>
                             <DockPanel DockPanel.Dock="Right" Width="508px" Margin="5px" HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -291,13 +279,13 @@
                                     <GridViewColumn>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Image Source="{Binding FileImage}" Height="30px"/>
+                                                <Image Source="{Binding FileExtension, Converter={StaticResource ImageExtensionConverter}}" Height="30px"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
                                     <GridViewColumn Width="150" Header="File Name" DisplayMemberBinding="{Binding FileName}"/>
                                     <GridViewColumn Width="150" Header="New File Name" DisplayMemberBinding="{Binding NewFileName}"/>
-                                    <GridViewColumn Width="110" Header="File Extendsion" DisplayMemberBinding="{Binding FileExtension}"/>
+                                    <GridViewColumn Width="110" Header="File Extension" DisplayMemberBinding="{Binding FileExtension}"/>
                                     <GridViewColumn Width="280" Header="File Path" DisplayMemberBinding="{Binding FilePath}"/>
                                     <GridViewColumn Width="250" Header="Status">
                                         <GridViewColumn.CellTemplate>
@@ -340,7 +328,7 @@
                         </DockPanel>
                         <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" MinHeight="35">
                             <StackPanel DockPanel.Dock="Left" Orientation ="Horizontal" HorizontalAlignment="Left">
-                                <hc:Pagination Name="FolderPagination" AllowDrop="True"  DragOver="DragOverFolderPage" IsJumpEnabled="True" MaxPageInterval ="2" PageUpdated="page_FolderPageUpdated" PageIndex="1" />
+                                <hc:Pagination Name="FolderPagination" IsJumpEnabled="True" MaxPageInterval ="2" PageUpdated="page_FolderPageUpdated" PageIndex="1" />
                             </StackPanel>
                             <DockPanel Width="508px" Margin="5px" HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" >
@@ -364,24 +352,8 @@
                             </DockPanel>
                         </DockPanel>
                         <ListView x:Name="folderList" Margin="5px" AllowDrop="True" DragOver="DragOverFolderList" Drop="DropFolderList" Background="#FFD7E4F2">
-                            <ListView.Resources>
-                                <ContextMenu x:Key="ItemContextMenu">
-                                    <MenuItem Header="Open In File Explorer" Click="openInFolderExplorer_Click">
-                                        <MenuItem.Icon>
-                                            <Image Source="Images/browser.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-
-                                    <MenuItem Header="Delete Path" Click="deleteFolderMenu_Click">
-                                        <MenuItem.Icon>
-                                            <Image Source="Images/clear.png"  RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </ListView.Resources>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource ListViewItemBaseStyle}" >
-                                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
                                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="FolderList_PreviewMouseLeftButtonDown"/>
                                     <EventSetter Event="Drop" Handler="FolderList_Drop"/>
                                 </Style>

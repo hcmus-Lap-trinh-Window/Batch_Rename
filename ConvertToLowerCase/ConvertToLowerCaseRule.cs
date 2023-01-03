@@ -1,70 +1,62 @@
-using CommonModel;
 using CommonModel.Model;
 using RuleWindow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace CommonModel
 {
-    public class ChangeExtensionRule : IRule
+    public class ConvertToLowerCaseRule : IRule
     {
         public string Name { get; set; }
-        public string Extension { get; set; }
         public bool IsInUse { get; set; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         [JsonIgnore]
         public UserControl ConfigurationUI { get; set; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public ChangeExtensionRule()
+        public ConvertToLowerCaseRule()
         {
-            Name = "Change Extension";
-            Extension = "";
-            ConfigurationUI = new ChangeExtensionRuleWindow(this);
+            Name = "Convert To Lower Case and Trim WhiteSpace";
+            IsInUse = false;
+            var instance = this;
+            ConfigurationUI = new ConvertToLowerCaseRuleWindow(instance);
         }
 
         public string Apply(string originString, object parameters)
         {
-            var result = string.Empty;
+            string result = string.Empty;
             try
             {
                 if (originString.IsNullOrWhiteSpace())
                 {
-                    throw new Exception("ChangeExtension failed! File name cannot be null!");
+                    throw new Exception("ConvertToLowerCase Failed. File name cannot be null!");
                 }
-                result = $"{originString.getFileName()}.{this.Extension}"; 
-            
+                result = Regex.Replace(originString.ToLower(), @"\s+", "");
             }
             catch(Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException ?? ex);
             }
             return result;
-
         }
+
         public List<string> Apply(List<string> orginStringList, object parameters)
         {
             List<string> result = new List<string>();
             try
             {
-                if (!ExtensionValidation(this.Extension))
-                {
-                    throw new Exception($"ChangeExtensionRule failed. Extension not accepted");
-                }
                 if (orginStringList != null && orginStringList.Count > 0)
                 {
                     foreach (var origin in orginStringList)
                     {
-                        var newFileName = Apply(origin, parameters);
-                        result.Add(newFileName);
+                        result.Add(Apply(origin, parameters));
                     }
                 }
             }
@@ -74,37 +66,21 @@ namespace CommonModel
             }
             return result;
         }
+
         public object Clone()
         {
             return MemberwiseClone();
         }
-        /// <summary>
-        /// validate input extension
-        /// </summary>
-        /// <param name="ext"></param>
-        /// <returns></returns>
-        private bool ExtensionValidation(string ext)
-        {
-            bool result = false;
-            if (!string.IsNullOrWhiteSpace(ext))
-            {
-                if (ext.All(char.IsLetter))
-                {
-                    result = true;
-                }
-            }
-            return result;
-        }
 
         public IRule Clone(RuleJson ruleJson)
         {
-            ChangeExtensionRule instance = null;
+            ConvertToLowerCaseRule instance = null;
             try
             {
-                instance = JsonSerializer.Deserialize<ChangeExtensionRule>(ruleJson.Json);
+                instance = JsonSerializer.Deserialize<ConvertToLowerCaseRule>(ruleJson.Json);
                 if (instance != null)
                 {
-                    instance.ConfigurationUI = new ChangeExtensionRuleWindow(instance);
+                    instance.ConfigurationUI = new ConvertToLowerCaseRuleWindow(instance);
                 }
             }
             catch (Exception ex)

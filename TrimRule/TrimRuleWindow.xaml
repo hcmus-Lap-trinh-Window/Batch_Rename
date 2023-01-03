@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="RuleWindow.TrimRuleWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RuleWindow"
+             xmlns:CommonModel="clr-namespace:CommonModel"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             Background="White"
+             HorizontalContentAlignment="Left"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             Loaded="UserControl_Loaded">
+    <StackPanel Margin="10">
+        <StackPanel.Resources>
+            <local:ComparisonConverter x:Key="ComparisonConverter" />
+        </StackPanel.Resources>
+        <TextBlock HorizontalAlignment="Left" FontWeight="Bold" Text="Remove: "/>
+        <RadioButton HorizontalAlignment="Left" IsChecked="{Binding config, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static CommonModel:TrimConfig.LeadingSpace}}" GroupName="TrimType" Margin="0,3,0,3" Content="Leading Space"/>
+        <RadioButton HorizontalAlignment="Left" IsChecked="{Binding config, Converter={StaticResource ComparisonConverter},  ConverterParameter={x:Static CommonModel:TrimConfig.TrailingSpace}}" GroupName="TrimType" Margin="0,3,0,3" Content="TrailingRadio"/>
+        <RadioButton HorizontalAlignment="Left" IsChecked="{Binding config, Converter={StaticResource ComparisonConverter},  ConverterParameter={x:Static CommonModel:TrimConfig.Both}}"  GroupName="TrimType" Margin="0,3,0,3" Content="Both"/>
+    </StackPanel>
+</UserControl>

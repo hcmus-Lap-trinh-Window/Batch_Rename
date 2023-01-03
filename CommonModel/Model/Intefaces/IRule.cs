@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonModel.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -10,5 +11,7 @@ namespace CommonModel
         public bool IsInUse { get; set; }
         public string Apply(string originString, object parameters);
         public List<string> Apply(List<string> orginStringList, object parameters);
+        public IRule Clone(RuleJson ruleJson);
+        public string ToJson();
     }
 }

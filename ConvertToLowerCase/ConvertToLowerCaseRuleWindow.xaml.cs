@@ -17,13 +17,12 @@ using System.Windows.Shapes;
 namespace RuleWindow
 {
     /// <summary>
-    /// Interaction logic for ChangeExtensionRuleWindow.xaml
+    /// Interaction logic for ConvertToLowerCaseRuleWindow.xaml
     /// </summary>
-    public partial class ChangeExtensionRuleWindow : UserControl
+    public partial class ConvertToLowerCaseRuleWindow : UserControl
     {
-        private ChangeExtensionRule rule;
-
-        public ChangeExtensionRuleWindow(ChangeExtensionRule rule)
+        ConvertToLowerCaseRule rule;
+        public ConvertToLowerCaseRuleWindow(ConvertToLowerCaseRule rule)
         {
             this.rule = rule;
             InitializeComponent();
@@ -31,12 +30,7 @@ namespace RuleWindow
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = this.rule;
-        }
-
-        private void extensionInput_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            this.rule.Extension  = extensionInput.Text;
+            //this.DataContext = rule;
         }
     }
 }

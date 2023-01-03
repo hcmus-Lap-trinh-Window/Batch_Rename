@@ -23,8 +23,8 @@ namespace RuleWindow
     /// </summary>
     public partial class AddNumberCounterRuleWindow : UserControl
     {
-        AddNumberCounterRule rule;
-        public AddNumberCounterRuleWindow(ref AddNumberCounterRule rule)
+        private AddNumberCounterRule rule;
+        public AddNumberCounterRuleWindow(AddNumberCounterRule rule)
         {
             this.rule = rule;
             InitializeComponent();
@@ -74,7 +74,7 @@ namespace RuleWindow
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DataContext = rule;
+            //this.DataContext = rule;
         }
     }
 }

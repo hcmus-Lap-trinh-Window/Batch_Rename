@@ -4,7 +4,11 @@
     "RuleList": [
       "AddPrefixRule",
       "AddNumberCounterRule",
-      "ChangeExtensionRule"
+      "ChangeExtensionRule",
+      "ConvertToLowerCase",
+      "ReplaceSpecialCharacterRule",
+      "TrimRule",
+      "ConvertToPascalCase"
     ]
   }
 }
