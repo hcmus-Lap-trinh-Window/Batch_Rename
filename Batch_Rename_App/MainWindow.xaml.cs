@@ -159,6 +159,8 @@ namespace Batch_Rename_App
                     // set project resolution
                     this.Height = projectStatus.Height;
                     this.Width = projectStatus.Width;
+                    this.Top = projectStatus.Top;
+                    this.Left = projectStatus.Left;
                     // set rule combo box
                     this.RuleComboBox.ItemsSource = _RuleFactory.GetAllRuleNames();
                     // set rule list
@@ -1212,6 +1214,8 @@ namespace Batch_Rename_App
                 ProjectStatus projectStatus = new ProjectStatus();
                 projectStatus.Width = this.Width;
                 projectStatus.Height = this.Height;
+                projectStatus.Top = this.Top;
+                projectStatus.Left = this.Left;
                 projectStatus.currentFolderPage = this.currentFolderPage;
                 projectStatus.currentFilePage = this.currentFilePage;
                 projectStatus.FileList = this.FileList;

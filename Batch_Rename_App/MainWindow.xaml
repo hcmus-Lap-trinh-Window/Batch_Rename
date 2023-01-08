@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Batch_Rename_App.Converters" xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
+        Height="{Binding SystemParameters.PrimaryScreenHeight}"
+        Width="{Binding SystemParameters.PrimaryScreenWidth}"
         Icon="/Images/rename.png"
         Title="Batch Rename" MinHeight="650" MinWidth="1360" ResizeMode="CanResizeWithGrip"
         Loaded="Window_Loaded"
