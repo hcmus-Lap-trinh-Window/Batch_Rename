@@ -114,4 +114,4 @@ Mỗi thành viên đều có thời gian làm việc trung bình từ 32 đến
 |3|Trương Công Thành| 19120660 | 10
 ## **Video demo** <a name="video"></a>
 ***
-Link video: 
+Link video: https://drive.google.com/file/d/1j65Rt5yTgGLLFFlqy4LmQw-p3bgJrIWQ/view
